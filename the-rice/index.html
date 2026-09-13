@@ -625,6 +625,15 @@
         font-size: 13px;
         padding: 30px 0 50px;
       }
+      .flowToast {
+        position: fixed; left: 50%; bottom: 22px; z-index: 80;
+        width: min(560px, calc(100% - 28px)); padding: 15px 18px;
+        border-radius: 17px; background: #eaf9f0; color: #0c7542;
+        box-shadow: 0 14px 40px #18233d33; font-weight: 800;
+        transform: translate(-50%, 130%); opacity: 0; transition: .25s ease;
+      }
+      .flowToast.show { transform: translate(-50%, 0); opacity: 1; }
+      .flowToast.error { background: #fff0f1; color: #a72232; }
       .platformBy {
         display: flex;
         align-items: center;
@@ -1195,6 +1204,7 @@
       <div class="platformBy"><span>ระบบโดย / Platform by</span><img src="hero-event-logo.jpg?v=1" alt="HERO Event" /></div>
       TheRice-Event • ระบบจองพื้นที่จัดงาน / Event Booking Platform
     </footer>
+    <div id="flowToast" class="flowToast" role="status" aria-live="polite"></div>
     <script>
       const API_URL = "https://ajbuenoxbsfmwhydvlxd.supabase.co/functions/v1/hero-event-api";
       const API_KEY = "sb_publishable_oron-nE6v6FSF_YPckMCGA_4QHstvwm";
@@ -1207,6 +1217,14 @@
         const result = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(result.error || "Please try again.");
         return result;
+      }
+      let toastTimer;
+      function showMessage(message, isError = false) {
+        clearTimeout(toastTimer);
+        flowToast.textContent = message;
+        flowToast.classList.toggle("error", isError);
+        flowToast.classList.add("show");
+        toastTimer = setTimeout(() => flowToast.classList.remove("show"), 5000);
       }
       const cats = {
         A: "โซน 1 อาหารและเครื่องดื่ม / Sector 1 Food & Drinks",
@@ -1431,8 +1449,9 @@
             renderBooths();
           }
         }, 1000);
+        requestAnimationFrame(() => paymentBox.scrollIntoView({ behavior: "smooth", block: "start" }));
         } catch (error) {
-          alert(error.message);
+          showMessage(error.message, true);
           await loadLiveState();
         }
       }
@@ -1453,8 +1472,9 @@
         paymentDue.textContent = due.toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short" });
         selectPaymentMethod("bank");
         showProfile(selected);
-        alert(result.email_sent ? "ยืนยันการจองแล้ว และส่งอีเมลแล้ว / Booking confirmed and email sent." : "ยืนยันการจองแล้ว / Booking confirmed. Email delivery requires checking.");
-        } catch (error) { alert(error.message); await loadLiveState(); }
+        showMessage(result.email_sent ? "ยืนยันการจองแล้ว และส่งอีเมลแล้ว / Booking confirmed and email sent." : "ยืนยันการจองแล้ว / Booking confirmed. Email delivery requires checking.");
+        requestAnimationFrame(() => paymentCheckout.scrollIntoView({ behavior: "smooth", block: "start" }));
+        } catch (error) { showMessage(error.message, true); await loadLiveState(); }
       }
       function selectPaymentMethod(method) {
         currentPaymentMethod = method;
@@ -1472,7 +1492,7 @@
         }
         const file = paymentSlip.files[0];
         if (file.size > 5 * 1024 * 1024) {
-          alert("ไฟล์ต้องไม่เกิน 5 MB / File must be 5 MB or smaller.");
+          showMessage("ไฟล์ต้องไม่เกิน 5 MB / File must be 5 MB or smaller.", true);
           return;
         }
         try {
@@ -1493,8 +1513,9 @@
         paymentCheckout.classList.add("hidden");
         bookingSuccess.classList.add("hidden");
         paymentSubmitted.classList.remove("hidden");
-          alert(result.email_sent ? "ส่งหลักฐานและอีเมลยืนยันแล้ว / Slip and confirmation email sent." : "ส่งหลักฐานแล้ว / Slip submitted. Email delivery requires checking.");
-        } catch (error) { alert(error.message); }
+          showMessage("ได้รับหลักฐานแล้ว กรุณารอผู้จัดงานตรวจสอบ / Slip received—awaiting organizer verification.");
+          requestAnimationFrame(() => paymentSubmitted.scrollIntoView({ behavior: "smooth", block: "center" }));
+        } catch (error) { showMessage(error.message, true); }
       }
       function openSignup(r) {
         setRole(r);
@@ -1607,11 +1628,19 @@
                 : "#",
             presence: presenceInput.value,
           };
-          go("floor");
+          requestAnimationFrame(() => {
+            if (selected && status[selected] === "available") {
+              selectedHub.scrollIntoView({ behavior: "smooth", block: "center" });
+              showMessage("ลงทะเบียนแล้ว กรุณากด ‘สำรอง 15 นาที’ / Registered—tap ‘Hold for 15 Minutes’. ");
+            } else {
+              document.getElementById("floor").scrollIntoView({ behavior: "smooth", block: "start" });
+              showMessage("ลงทะเบียนแล้ว กรุณาเลือกพื้นที่สีเขียว / Registered—select a green space.");
+            }
+          });
         }
-          alert(result.email_sent ? "ลงทะเบียนเรียบร้อย และส่งอีเมลแล้ว / Registration complete and email sent." : "ลงทะเบียนเรียบร้อย / Registration complete. Email delivery requires checking.");
+          if (currentRole === "visitor") showMessage(result.email_sent ? "ลงทะเบียนเรียบร้อย และส่งอีเมลแล้ว / Registration complete and email sent." : "ลงทะเบียนเรียบร้อย / Registration complete.");
         } catch (error) {
-          alert(error.message);
+          showMessage(error.message, true);
         } finally {
           continueBtn.disabled = false;
           continueBtn.innerHTML = original;

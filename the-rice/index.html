@@ -1,0 +1,1305 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>TheRice-Event | ระบบจองพื้นที่จัดงาน</title>
+    <style>
+      :root {
+        --pink: #ef4f9a;
+        --pink-soft: #fff0f7;
+        --blue: #3167e3;
+        --blue-soft: #eef4ff;
+        --ink: #22304a;
+        --muted: #66728a;
+        --bg: #f7f8fc;
+        --line: #dfe4ee;
+        --green: #23b26b;
+        --amber: #f0a824;
+        --red: #e34d59;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: Inter, "Noto Sans Thai", system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+      }
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+      }
+      .wrap {
+        max-width: 1180px;
+        margin: auto;
+        padding: 0 18px;
+      }
+      .top {
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        background: #fffffff2;
+        border-bottom: 1px solid var(--line);
+      }
+      .nav {
+        height: 70px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      .brand {
+        font-weight: 950;
+        font-size: 24px;
+      }
+      .p {
+        color: var(--pink);
+      }
+      .b {
+        color: var(--blue);
+      }
+      .navlinks {
+        margin-left: auto;
+        display: flex;
+        gap: 5px;
+      }
+      .nav button,
+      .btn {
+        border: 0;
+        border-radius: 14px;
+        padding: 11px 16px;
+        font-weight: 850;
+        cursor: pointer;
+      }
+      .nav button {
+        background: transparent;
+        color: #526079;
+      }
+      .btn.grad {
+        background: linear-gradient(90deg, var(--pink), var(--blue));
+        color: white;
+      }
+      .btn.pink {
+        background: var(--pink);
+        color: white;
+      }
+      .btn.blue {
+        background: var(--blue);
+        color: white;
+      }
+      .btn.ghost {
+        background: #fff;
+        border: 1px solid var(--line);
+        color: #45516a;
+      }
+      .hero {
+        padding: 28px 0;
+      }
+      .heroGrid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 20px;
+      }
+      .photoCard {
+        position: relative;
+        align-self: start;
+        aspect-ratio: 1536 / 1229;
+        border-radius: 28px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 18px 50px #22304a1f;
+        line-height: 0;
+      }
+      .photoCard img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .buildingTitle {
+        position: absolute;
+        z-index: 2;
+        top: 7%;
+        left: 5%;
+        line-height: 0.9;
+        font-size: clamp(30px, 4.2vw, 58px);
+        font-weight: 850;
+        letter-spacing: -0.04em;
+        text-shadow: 0 2px 10px rgba(255, 255, 255, 0.9);
+      }
+      .buildingTitle .rice {
+        color: var(--pink);
+      }
+      .buildingTitle .building {
+        display: block;
+        margin-top: 8px;
+        color: #20242c;
+      }
+      .eventCard {
+        border-radius: 28px;
+        padding: 34px;
+        background: linear-gradient(
+          145deg,
+          var(--pink-soft) 0 48%,
+          var(--blue-soft) 48%
+        );
+        border: 1px solid #e8ddec;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .kicker {
+        font-size: 13px;
+        letter-spacing: 0.1em;
+        color: #736681;
+        font-weight: 900;
+      }
+      .eventCard h1 {
+        font-size: 50px;
+        line-height: 0.94;
+        margin: 14px 0;
+      }
+      .lead {
+        font-size: 18px;
+        line-height: 1.55;
+        color: #4e5b73;
+      }
+      .en {
+        display: block;
+        font-size: 0.85em;
+        color: var(--muted);
+        font-weight: 500;
+        margin-top: 2px;
+      }
+      .chips,
+      .heroBtns,
+      .legend {
+        display: flex;
+        gap: 9px;
+        flex-wrap: wrap;
+      }
+      .chips {
+        margin: 17px 0 22px;
+      }
+      .chip {
+        background: #fff;
+        border: 1px solid var(--line);
+        padding: 8px 11px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 800;
+      }
+      .section {
+        padding: 20px 0 34px;
+      }
+      .sectionHead {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 16px;
+      }
+      .sectionHead h2 {
+        font-size: 30px;
+        margin: 0;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      .roleGrid,
+      .bookingGrid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .role,
+      .panel {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 24px;
+      }
+      .role.visitor {
+        border-top: 8px solid var(--pink);
+      }
+      .role.exhibitor {
+        border-top: 8px solid var(--blue);
+      }
+      .role h3 {
+        font-size: 25px;
+        margin: 0 0 8px;
+      }
+      .benefit {
+        display: flex;
+        gap: 10px;
+        margin: 12px 0;
+      }
+      .dot {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        color: white;
+        font-weight: 900;
+        flex: 0 0 26px;
+      }
+      .visitor .dot {
+        background: var(--pink);
+      }
+      .exhibitor .dot {
+        background: var(--blue);
+      }
+      .stat {
+        padding: 11px 14px;
+        border-radius: 14px;
+        background: #f3f6fb;
+        font-weight: 850;
+      }
+      .liveReport {
+        min-width: min(100%, 330px);
+        display: grid;
+        gap: 7px;
+        padding: 16px 18px;
+        border-radius: 18px;
+        background: #f3f6fb;
+      }
+      .liveReport .reportRow {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        font-weight: 850;
+      }
+      .liveReport .reportRow span:last-child {
+        white-space: nowrap;
+      }
+      .liveReport .en {
+        font-size: 12px;
+      }
+      .legend {
+        margin: 12px 0;
+      }
+      .lg {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+      }
+      .ball {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+      .floorShell {
+        background: linear-gradient(#fafbfe, #eff4fb);
+        border: 2px solid #dce2ee;
+        border-radius: 28px;
+        padding: 18px;
+        overflow: auto;
+      }
+      .floorTitle {
+        text-align: center;
+        margin-bottom: 14px;
+      }
+      .floor {
+        display: grid;
+        grid-template-columns: 1fr 1.1fr 1fr;
+        grid-template-areas:
+          "s1 s5 s2"
+          "s3 s5 s4";
+        gap: 14px;
+      }
+      .sector {
+        background: #fff;
+        border: 1px solid #dfe5ef;
+        border-radius: 20px;
+        padding: 13px;
+      }
+      .s1 {
+        grid-area: s1;
+        border-top: 7px solid var(--pink);
+      }
+      .s2 {
+        grid-area: s2;
+        border-top: 7px solid var(--blue);
+      }
+      .s3 {
+        grid-area: s3;
+        border-top: 7px solid #8a63d2;
+      }
+      .s4 {
+        grid-area: s4;
+        border-top: 7px solid #4aa879;
+      }
+      .s5 {
+        grid-area: s5;
+        background: linear-gradient(#fff3f8, #eef4ff);
+        border: 2px dashed #b9a9d7;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        min-height: 390px;
+      }
+      .sectorHead {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .booths {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 7px;
+      }
+      .booth {
+        border-radius: 10px;
+        padding: 9px 2px;
+        font-size: 11px;
+        font-weight: 900;
+        cursor: pointer;
+      }
+      .available {
+        background: #e7f7ee;
+        color: #087740;
+        border: 1px solid #b8e7ca;
+      }
+      .hold {
+        background: #fff3d4;
+        color: #8b5900;
+        border: 1px solid #efcc79;
+      }
+      .booked {
+        background: #fee9ec;
+        color: #ac2635;
+        border: 1px solid #f1b7be;
+      }
+      .selected {
+        outline: 3px solid #24344e;
+      }
+      .stageIcon {
+        font-size: 56px;
+      }
+      .row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px dashed var(--line);
+      }
+      .notice {
+        padding: 12px;
+        border-radius: 14px;
+        background: #fff5d9;
+        color: #705200;
+        font-size: 14px;
+      }
+      .success {
+        background: #eaf9f0;
+        color: #0c7542;
+      }
+      .profile {
+        display: none;
+      }
+      .profile.open {
+        display: block;
+      }
+      .profileLogo {
+        width: 76px;
+        height: 76px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, var(--pink), var(--blue));
+        color: #fff;
+        display: grid;
+        place-items: center;
+        font-size: 30px;
+        font-weight: 950;
+      }
+      .profileTop {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+      }
+      .payment {
+        display: grid;
+        gap: 9px;
+        margin: 12px 0;
+      }
+      .pay {
+        display: flex;
+        gap: 10px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+      }
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: #181f2f94;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 18px;
+        z-index: 50;
+      }
+      .modal.open {
+        display: flex;
+      }
+      .modalCard {
+        width: min(650px, 100%);
+        max-height: 92vh;
+        overflow: auto;
+        border-radius: 26px;
+        padding: 24px;
+        border: 2px solid transparent;
+        transition: 0.2s;
+      }
+      .modalCard.role-visitor {
+        background: var(--pink-soft);
+        border-color: #f4b6d3;
+      }
+      .modalCard.role-exhibitor {
+        background: var(--blue-soft);
+        border-color: #b9ccf7;
+      }
+      .tabs {
+        display: flex;
+        gap: 8px;
+        margin: 12px 0 18px;
+      }
+      .tab {
+        flex: 1;
+        padding: 12px;
+        border-radius: 13px;
+        border: 1px solid var(--line);
+        font-weight: 900;
+        background: #fff;
+        cursor: pointer;
+      }
+      .tab.visitor.active {
+        background: var(--pink);
+        color: #fff;
+      }
+      .tab.exhibitor.active {
+        background: var(--blue);
+        color: #fff;
+      }
+      .formGrid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .field {
+        display: grid;
+        gap: 6px;
+      }
+      .field.full {
+        grid-column: 1/-1;
+      }
+      .field label {
+        font-size: 14px;
+        font-weight: 850;
+        color: #4f5c73;
+      }
+      .field input,
+      .field select,
+      .field textarea {
+        width: 100%;
+        padding: 13px;
+        border: 1px solid #d4dbe8;
+        border-radius: 12px;
+        background: #fff;
+      }
+      .field textarea {
+        min-height: 85px;
+      }
+      .hidden {
+        display: none !important;
+      }
+      .visitorDash {
+        display: none;
+      }
+      .visitorDash.active {
+        display: block;
+      }
+      .visitorCount {
+        margin: 0 0 16px;
+        padding: 14px 18px;
+        border-radius: 16px;
+        background: var(--pink-soft);
+        color: #9b2861;
+        font-size: 18px;
+        font-weight: 850;
+      }
+      .insureBenefit {
+        margin-top: 16px;
+        padding: 18px;
+        border: 1px solid #cfd9ee;
+        border-radius: 20px;
+        background: #fff;
+        text-align: center;
+      }
+      .insureBenefit img {
+        display: block;
+        width: min(260px, 80%);
+        height: auto;
+        margin: 0 auto 14px;
+      }
+      .insureBenefit .pendingBtn {
+        width: 100%;
+        margin-top: 14px;
+        opacity: 0.65;
+        cursor: not-allowed;
+      }
+      .footer {
+        text-align: center;
+        color: #7a8498;
+        font-size: 13px;
+        padding: 30px 0 50px;
+      }
+      @media (max-width: 900px) {
+        .heroGrid,
+        .roleGrid,
+        .bookingGrid {
+          grid-template-columns: 1fr;
+        }
+        .eventCard h1 {
+          font-size: 42px;
+        }
+      }
+      @media (max-width: 560px) {
+        .navlinks {
+          display: none;
+        }
+        .eventCard {
+          padding: 24px;
+        }
+        .eventCard h1 {
+          font-size: 38px;
+        }
+        .formGrid {
+          grid-template-columns: 1fr;
+        }
+        .field.full {
+          grid-column: auto;
+        }
+        .sectionHead {
+          align-items: start;
+          flex-direction: column;
+        }
+        .floorShell {
+          padding: 8px;
+        }
+        .floor {
+          grid-template-columns: 1fr 1fr;
+          grid-template-areas:
+            "s1 s2"
+            "s5 s5"
+            "s3 s4";
+          gap: 7px;
+        }
+        .sector {
+          padding: 7px;
+          border-radius: 14px;
+        }
+        .sectorHead {
+          font-size: 11px;
+          gap: 3px;
+        }
+        .booths {
+          gap: 3px;
+        }
+        .booth {
+          padding: 7px 0;
+          font-size: 9px;
+          border-radius: 7px;
+        }
+        .s5 {
+          min-height: 135px;
+        }
+        .stageIcon {
+          font-size: 32px;
+        }
+        .buildingTitle {
+          top: 7%;
+          left: 5%;
+          font-size: clamp(27px, 9vw, 43px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="top">
+      <div class="wrap nav">
+        <div class="brand">
+          <span class="p">TheRice</span>-<span class="b">Event</span>
+        </div>
+        <div class="navlinks">
+          <button onclick="go('venue')">
+            สถานที่<span class="en">Venue</span></button
+          ><button onclick="go('floor')">
+            แผนผัง<span class="en">Floor Plan</span>
+          </button>
+        </div>
+        <button class="btn grad" onclick="openSignup('exhibitor')">
+          จองพื้นที่<span class="en" style="color: white">Book a Space</span>
+        </button>
+      </div>
+    </header>
+    <main>
+      <section id="venue" class="hero">
+        <div class="wrap heroGrid">
+          <div class="photoCard">
+            <img
+              src="rice-building-clean.jpg?v=2"
+              alt="อาคารเดอะไรซ์ The Rice Building"
+            />
+            <div class="buildingTitle">
+              <span class="rice">The Rice</span>
+              <span class="building">Building</span>
+            </div>
+          </div>
+          <div class="eventCard">
+            <div class="kicker">
+              อาคารเดอะไรซ์ • กรุงเทพฯ • งาน 3 วัน<span class="en"
+                >THE RICE BUILDING • BANGKOK • 3-DAY EVENT</span
+              >
+            </div>
+            <h1><span class="p">TheRice</span>-<span class="b">Event</span></h1>
+            <div class="chips">
+              <span class="chip">3 วัน / Days</span
+              ><span class="chip">120 พื้นที่ / Spaces</span
+              ><span class="chip">5 โซน / Sectors</span>
+            </div>
+            <div class="heroBtns">
+              <button class="btn pink" onclick="openSignup('visitor')">
+                ลงทะเบียนผู้เข้าชม<span class="en" style="color: white"
+                  >Visitor Registration</span
+                ></button
+              ><button class="btn blue" onclick="openSignup('exhibitor')">
+                สมัครผู้แสดงสินค้า<span class="en" style="color: white"
+                  >Exhibitor Registration</span
+                >
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section">
+        <div class="wrap">
+          <div class="sectionHead">
+            <div>
+              <h2>
+                เลือกประเภทการลงทะเบียน<span class="en"
+                  >Choose Your Registration</span
+                >
+              </h2>
+            </div>
+          </div>
+          <div class="roleGrid">
+            <article class="role visitor">
+              <h3>ผู้เข้าชมงาน<span class="en">Visitor</span></h3>
+              <p>
+                ลงทะเบียนรับโปรไฟล์ผู้เข้าชมและสิทธิประโยชน์ภายในงาน<span
+                  class="en"
+                  >Register for your visitor profile and event benefit.</span
+                >
+              </p>
+              <div class="benefit">
+                <span class="dot">✓</span>
+                <div>
+                  <b>รับสิทธิ์ส่วนลดประกัน พ.ร.บ. 200 คะแนน</b
+                  ><span class="en"
+                    >Receive a 200-point PRB Insurance discount benefit.</span
+                  >
+                </div>
+              </div>
+              <button class="btn pink" onclick="openSignup('visitor')">
+                ลงทะเบียนผู้เข้าชม<span class="en" style="color: white"
+                  >Visitor Sign Up</span
+                >
+              </button>
+            </article>
+            <article class="role exhibitor">
+              <h3>ผู้แสดงสินค้า<span class="en">Exhibitor</span></h3>
+              <p>
+                ลงทะเบียนร้านค้า แล้วเลือกพื้นที่จากแผนผังแบบเรียลไทม์<span
+                  class="en"
+                  >Register your business, then choose a space from the live
+                  floor plan.</span
+                >
+              </p>
+              <div class="benefit">
+                <span class="dot">✓</span>
+                <div>
+                  <b>เลือกพื้นที่จริงจาก 120 จุด</b
+                  ><span class="en"
+                    >Choose an exact space from all 120 spaces.</span
+                  >
+                </div>
+              </div>
+              <button class="btn blue" onclick="openSignup('exhibitor')">
+                สมัครและจองพื้นที่<span class="en" style="color: white"
+                  >Sign Up & Book</span
+                >
+              </button>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="floor">
+        <div class="wrap panel">
+          <div class="sectionHead">
+            <div>
+              <h2>
+                แผนผังพื้นที่จัดงานทั้งหมด<span class="en"
+                  >Complete Interactive Floor Plan</span
+                >
+              </h2>
+            </div>
+            <div class="liveReport" id="availabilityText">—</div>
+          </div>
+          <div class="legend">
+            <span class="lg"
+              ><span class="ball" style="background: var(--green)"></span>ว่าง /
+              Available</span
+            ><span class="lg"
+              ><span class="ball" style="background: var(--amber)"></span
+              >จองแล้ว รอชำระ / Awaiting Payment</span
+            ><span class="lg"
+              ><span class="ball" style="background: var(--red)"></span>ชำระแล้ว
+              / Paid</span
+            >
+          </div>
+          <div class="floorShell">
+            <div class="floorTitle">
+              <b>5 โซนในแผนผังเดียว / 5 sectors on one floor plan</b
+              ><span class="en"
+                >แตะพื้นที่สีเขียวเพื่อจอง
+                หรือแตะพื้นที่สีเหลืองและสีแดงเพื่อดูข้อมูลร้านค้า</span
+              ><span class="en"
+                >Tap green to book; tap amber or red to view the
+                exhibitor.</span
+              >
+            </div>
+            <div class="floor">
+              <section class="sector s1">
+                <div class="sectorHead">
+                  <b
+                    >โซน 1 อาหารและเครื่องดื่ม<br /><span class="en"
+                      >Sector 1 Food & Drinks</span
+                    ></b
+                  ><span>30</span>
+                </div>
+                <div id="zoneA" class="booths"></div>
+              </section>
+              <section class="sector s5">
+                <div class="stageIcon">🎤</div>
+                <h3>โซน 5<span class="en">Sector 5</span></h3>
+                <b
+                  >บันเทิงและพื้นที่ส่วนกลาง<span class="en"
+                    >Entertainment & Common Area</span
+                  ></b
+                >
+                <p class="muted">
+                  เวที • กิจกรรม • ที่นั่ง • ทางเดิน<br /><span class="en"
+                    >Stage • Activities • Seating • Circulation</span
+                  >
+                </p>
+              </section>
+              <section class="sector s2">
+                <div class="sectorHead">
+                  <b
+                    >โซน 2 สินค้าทั่วไป<br /><span class="en"
+                      >Sector 2 Open Items</span
+                    ></b
+                  ><span>30</span>
+                </div>
+                <div id="zoneB" class="booths"></div>
+              </section>
+              <section class="sector s3">
+                <div class="sectorHead">
+                  <b
+                    >โซน 3 ไลฟ์สไตล์และแฟชั่น<br /><span class="en"
+                      >Sector 3 Lifestyle & Fashion</span
+                    ></b
+                  ><span>30</span>
+                </div>
+                <div id="zoneC" class="booths"></div>
+              </section>
+              <section class="sector s4">
+                <div class="sectorHead">
+                  <b
+                    >โซน 4 สุขภาพ ความงามและบริการ<br /><span class="en"
+                      >Sector 4 Health, Beauty & Services</span
+                    ></b
+                  ><span>30</span>
+                </div>
+                <div id="zoneD" class="booths"></div>
+              </section>
+            </div>
+          </div>
+          <div class="bookingGrid">
+            <div class="panel">
+              <h3>พื้นที่ที่เลือก<span class="en">Selected Space</span></h3>
+              <div id="selectedEmpty" class="muted">
+                แตะพื้นที่สีเขียวเพื่อเริ่มจอง<span class="en"
+                  >Tap a green space to begin.</span
+                >
+              </div>
+              <div id="selectedCard" class="hidden">
+                <div class="row">
+                  <span>พื้นที่ / Space</span><b id="selSpace"></b>
+                </div>
+                <div class="row">
+                  <span>โซน / Sector</span><b id="selSector"></b>
+                </div>
+                <button class="btn grad" onclick="holdSelected()">
+                  สำรอง 15 นาที<span class="en" style="color: white"
+                    >Hold for 15 Minutes</span
+                  >
+                </button>
+              </div>
+              <div id="profileCard" class="profile">
+                <div class="profileTop">
+                  <div class="profileLogo" id="profileLogo">R</div>
+                  <div>
+                    <h3 id="profileName" style="margin: 0"></h3>
+                    <div id="profileStatus" class="muted"></div>
+                  </div>
+                </div>
+                <div class="row">
+                  <span>พื้นที่ / Space</span><b id="profileSpace"></b>
+                </div>
+                <div class="row">
+                  <span>ประเภท / Category</span><b id="profileCategory"></b>
+                </div>
+                <p id="profileProducts"></p>
+                <p id="profileDescription" class="muted"></p>
+                <a id="profileLink" target="_blank" rel="noopener"
+                  >เว็บไซต์ / Website</a
+                >
+              </div>
+            </div>
+            <div class="panel">
+              <h3>
+                การจองและชำระเงิน<span class="en">Booking & Payment</span>
+              </h3>
+              <div id="paymentEmpty" class="muted">
+                ลงทะเบียนผู้แสดงสินค้าและเลือกพื้นที่เพื่อดำเนินการต่อ<span
+                  class="en"
+                  >Register as an exhibitor and choose a space to
+                  continue.</span
+                >
+              </div>
+              <div id="paymentBox" class="hidden">
+                <div class="notice">
+                  พื้นที่ถูกสำรองไว้ 15 นาที: <b id="countdown">15:00</b
+                  ><span class="en">Space held for 15 minutes.</span>
+                </div>
+                <p>
+                  หลังยืนยันการจอง คุณมีเวลา 48 ชั่วโมงในการชำระเงิน<span
+                    class="en"
+                    >After booking, payment is due within 48 hours.</span
+                  >
+                </p>
+                <button class="btn blue" onclick="confirmPending()">
+                  ยืนยันการจอง<span class="en" style="color: white"
+                    >Confirm Booking</span
+                  >
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="visitorDash" class="section visitorDash">
+        <div class="wrap panel">
+          <h2>
+            ลงทะเบียนเรียบร้อย<span class="en">Registration Complete</span>
+          </h2>
+          <div class="visitorCount">
+            มีผู้ลงทะเบียนเข้าชมงานแล้ว
+            <span id="visitorCountValue">—</span> คน
+            <span class="en"
+              ><span id="visitorCountValueEn">—</span> visitors have
+              registered.</span
+            >
+          </div>
+          <div class="notice success">
+            <b>คุณได้รับ 200 HERO Credits สำหรับใช้ซื้อประกัน พ.ร.บ.</b
+            ><span class="en"
+              >You have received 200 HERO Credits toward PRB Insurance.</span
+            >
+          </div>
+          <div class="insureBenefit">
+            <img src="hero-insure-logo.jpg?v=1" alt="HERO Insure" />
+            <b>รับสิทธิ์ใช้คะแนนในการซื้อ พ.ร.บ. กับ HERO Insure</b>
+            <span class="en"
+              >Use your HERO Credits toward PRB Insurance with HERO
+              Insure.</span
+            >
+            <button class="btn blue pendingBtn" type="button" disabled>
+              ใช้สิทธิ์ซื้อ พ.ร.บ. ตอนนี้
+              <span class="en" style="color: white"
+                >Redeem for PRB Insurance</span
+              >
+            </button>
+            <small class="en"
+              >ระบบรับสิทธิ์กำลังเชื่อมต่อ / Redemption connection in
+              progress</small
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+    <div id="signupModal" class="modal">
+      <div id="modalCard" class="modalCard role-exhibitor">
+        <div style="display: flex; justify-content: space-between">
+          <div>
+            <div class="kicker">
+              ลงทะเบียน THE RICE-EVENT<span class="en"
+                >THE RICE-EVENT REGISTRATION</span
+              >
+            </div>
+            <h2 style="margin: 8px 0">
+              สมัครสมาชิก<span class="en">Sign Up</span>
+            </h2>
+          </div>
+          <button class="btn ghost" onclick="closeSignup()">✕</button>
+        </div>
+        <div class="tabs">
+          <button
+            id="tabVisitor"
+            class="tab visitor"
+            type="button"
+            onclick="setRole('visitor')"
+          >
+            ผู้เข้าชม<span class="en">Visitor</span></button
+          ><button
+            id="tabExhibitor"
+            class="tab exhibitor"
+            type="button"
+            onclick="setRole('exhibitor')"
+          >
+            ผู้แสดงสินค้า<span class="en">Exhibitor</span>
+          </button>
+        </div>
+        <form onsubmit="submitSignup(event)">
+          <div class="formGrid">
+            <div class="field">
+              <label
+                >ชื่อ-นามสกุล / ผู้ติดต่อ<span class="en"
+                  >Full Name / Contact Person</span
+                ></label
+              ><input id="nameInput" required />
+            </div>
+            <div class="field">
+              <label>โทรศัพท์มือถือ<span class="en">Mobile</span></label
+              ><input required inputmode="tel" />
+            </div>
+            <div class="field">
+              <label>อีเมล<span class="en">Email</span></label
+              ><input type="email" required />
+            </div>
+            <div class="field visitorOnly">
+              <label
+                >OSK รุ่น (ถ้ามี)<span class="en"
+                  >OSK Batch (Optional)</span
+                ></label
+              ><input id="oskInput" inputmode="numeric" placeholder="102" />
+            </div>
+            <div class="field exhibOnly">
+              <label
+                >ชื่อร้านค้า / ธุรกิจ<span class="en"
+                  >Business / Shop Name</span
+                ></label
+              ><input id="businessInput" />
+            </div>
+            <div class="field exhibOnly">
+              <label>ประเภทธุรกิจ<span class="en">Category</span></label
+              ><select id="categoryInput" onchange="toggleOther()">
+                <option>อาหารและเครื่องดื่ม / Food & Drinks</option>
+                <option>สินค้าทั่วไป / Open Items</option>
+                <option>ไลฟ์สไตล์และแฟชั่น / Lifestyle & Fashion</option>
+                <option>
+                  สุขภาพ ความงามและบริการ / Health, Beauty & Services
+                </option>
+                <option value="other">อื่นๆ / Others</option>
+              </select>
+            </div>
+            <div id="otherField" class="field exhibOnly hidden">
+              <label
+                >โปรดระบุประเภทธุรกิจ<span class="en"
+                  >Please Specify Your Category</span
+                ></label
+              ><input
+                id="otherInput"
+                placeholder="ระบุประเภท / Enter category"
+              />
+            </div>
+            <div class="field full exhibOnly">
+              <label
+                >รายการสินค้า / บริการ<span class="en"
+                  >Products / Services</span
+                ></label
+              ><textarea id="productsInput"></textarea>
+            </div>
+            <div class="field full exhibOnly">
+              <label
+                >รายละเอียดร้านค้า / ธุรกิจ<span class="en"
+                  >Business Description</span
+                ></label
+              ><textarea id="descriptionInput"></textarea>
+            </div>
+            <div class="field exhibOnly">
+              <label
+                >เว็บไซต์หรือโซเชียลมีเดีย<span class="en"
+                  >Website or Social Media</span
+                ></label
+              ><input id="websiteInput" placeholder="https://" />
+            </div>
+            <div class="field exhibOnly">
+              <label
+                >โลโก้หรือภาพร้านค้า<span class="en"
+                  >Logo or Shop Image</span
+                ></label
+              ><input type="file" accept="image/*" />
+            </div>
+          </div>
+          <label style="display: flex; gap: 9px; margin: 15px 0"
+            ><input type="checkbox" required />
+            <span
+              >ยอมรับเงื่อนไข กติกาการจอง และความเป็นส่วนตัว<span class="en"
+                >I agree to the event terms, booking rules and privacy
+                consent.</span
+              ></span
+            ></label
+          ><button id="continueBtn" class="btn blue" style="width: 100%">
+            ดำเนินการต่อ<span class="en" style="color: white">Continue</span>
+          </button>
+        </form>
+      </div>
+    </div>
+    <footer class="footer">
+      TheRice-Event • ระบบจองพื้นที่จัดงาน / Event Booking Platform
+    </footer>
+    <script>
+      const cats = {
+        A: "โซน 1 อาหารและเครื่องดื่ม / Sector 1 Food & Drinks",
+        B: "โซน 2 สินค้าทั่วไป / Sector 2 Open Items",
+        C: "โซน 3 ไลฟ์สไตล์และแฟชั่น / Sector 3 Lifestyle & Fashion",
+        D: "โซน 4 สุขภาพ ความงามและบริการ / Sector 4 Health, Beauty & Services",
+      };
+      let selected = null,
+        currentRole = "exhibitor",
+        timer,
+        remaining = 900,
+        currentExhibitor = {};
+      const booked = new Set([
+          "A03",
+          "A11",
+          "A17",
+          "B05",
+          "B13",
+          "B26",
+          "C08",
+          "C19",
+          "C28",
+          "D04",
+          "D12",
+          "D25",
+        ]),
+        held = new Set(["A08", "B18", "C03", "D19"]),
+        status = {},
+        profiles = {};
+      for (const z of ["A", "B", "C", "D"])
+        for (let i = 1; i <= 30; i++) {
+          let id = z + String(i).padStart(2, "0");
+          status[id] = booked.has(id)
+            ? "booked"
+            : held.has(id)
+              ? "hold"
+              : "available";
+        }
+      [...booked, ...held].forEach(
+        (id, i) =>
+          (profiles[id] = {
+            name: [
+              "ครัวบางกอก / Bangkok Kitchen",
+              "HERO Health",
+              "Siam Lifestyle",
+              "Beauty House",
+            ][i % 4],
+            category: cats[id[0]],
+            products: [
+              "อาหารไทยและเครื่องดื่ม / Thai food and drinks",
+              "ผลิตภัณฑ์สุขภาพ / Health products",
+              "สินค้าไลฟ์สไตล์ / Lifestyle products",
+              "ความงามและบริการ / Beauty and services",
+            ][i % 4],
+            description:
+              "พบสินค้า บริการ และโปรโมชั่นพิเศษภายในงาน / Discover products, services and special event offers.",
+            link: "https://example.com",
+          }),
+      );
+      function renderBooths() {
+        for (const z of ["A", "B", "C", "D"]) {
+          const e = document.getElementById("zone" + z);
+          e.innerHTML = "";
+          for (let i = 1; i <= 30; i++) {
+            const id = z + String(i).padStart(2, "0"),
+              b = document.createElement("button");
+            b.className =
+              "booth " + status[id] + (selected === id ? " selected" : "");
+            b.textContent = id;
+            b.onclick = () => spaceClick(id);
+            e.appendChild(b);
+          }
+        }
+        const v = Object.values(status),
+          a = v.filter((x) => x === "available").length,
+          h = v.filter((x) => x === "hold").length,
+          r = v.filter((x) => x === "booked").length;
+        availabilityText.innerHTML = `
+          <div class="reportRow"><span>จำนวนพื้นที่ทั้งหมด<br><small class="en">Total Spaces</small></span><span>120 ร้าน</span></div>
+          <div class="reportRow"><span>จองแล้ว<br><small class="en">Booked</small></span><span>${h} ร้าน</span></div>
+          <div class="reportRow"><span>ชำระเงินแล้ว<br><small class="en">Paid</small></span><span>${r} ร้าน</span></div>
+          <div class="reportRow"><span>คงเหลือ<br><small class="en">Remaining</small></span><span>${a} ร้าน</span></div>
+        `;
+      }
+      function spaceClick(id) {
+        selected = id;
+        renderBooths();
+        selectedCard.classList.add("hidden");
+        profileCard.classList.remove("open");
+        if (status[id] === "available") {
+          selectedEmpty.classList.add("hidden");
+          selectedCard.classList.remove("hidden");
+          selSpace.textContent = id;
+          selSector.textContent = cats[id[0]];
+        } else showProfile(id);
+      }
+      function showProfile(id) {
+        selectedEmpty.classList.add("hidden");
+        const p = profiles[id];
+        profileCard.classList.add("open");
+        profileLogo.textContent = p.name[0];
+        profileName.textContent = p.name;
+        profileSpace.textContent = id;
+        profileCategory.textContent = p.category;
+        profileProducts.textContent = p.products;
+        profileDescription.textContent = p.description;
+        profileLink.href = p.link;
+        profileStatus.textContent =
+          status[id] === "hold"
+            ? "จองแล้ว รอชำระภายใน 48 ชั่วโมง / Awaiting payment within 48 hours"
+            : "ชำระเงินแล้วและยืนยันพื้นที่ / Paid and confirmed";
+      }
+      function holdSelected() {
+        if (!selected) return;
+        status[selected] = "hold";
+        profiles[selected] = {
+          name: currentExhibitor.name || "ร้านค้าของคุณ / Your Business",
+          category: currentExhibitor.category || cats[selected[0]],
+          products:
+            currentExhibitor.products || "รอข้อมูลสินค้า / Products pending",
+          description: currentExhibitor.description || "",
+          link: currentExhibitor.link || "#",
+        };
+        remaining = 900;
+        renderBooths();
+        selectedCard.classList.add("hidden");
+        paymentEmpty.classList.add("hidden");
+        paymentBox.classList.remove("hidden");
+        clearInterval(timer);
+        timer = setInterval(() => {
+          remaining--;
+          countdown.textContent =
+            Math.floor(remaining / 60) +
+            ":" +
+            String(remaining % 60).padStart(2, "0");
+          if (remaining <= 0) {
+            clearInterval(timer);
+            status[selected] = "available";
+            delete profiles[selected];
+            paymentBox.classList.add("hidden");
+            paymentEmpty.classList.remove("hidden");
+            renderBooths();
+          }
+        }, 1000);
+      }
+      function confirmPending() {
+        clearInterval(timer);
+        paymentBox.innerHTML =
+          '<div class="notice success"><b>ยืนยันการจองแล้ว / Booking Confirmed</b><br>กรุณาชำระเงินภายใน 48 ชั่วโมง / Please complete payment within 48 hours.</div>';
+        showProfile(selected);
+      }
+      function openSignup(r) {
+        setRole(r);
+        signupModal.classList.add("open");
+      }
+      function closeSignup() {
+        signupModal.classList.remove("open");
+      }
+      function setRole(r) {
+        currentRole = r;
+        modalCard.className = "modalCard role-" + r;
+        tabVisitor.classList.toggle("active", r === "visitor");
+        tabExhibitor.classList.toggle("active", r === "exhibitor");
+        document
+          .querySelectorAll(".visitorOnly")
+          .forEach((x) => x.classList.toggle("hidden", r !== "visitor"));
+        document
+          .querySelectorAll(".exhibOnly")
+          .forEach((x) => x.classList.toggle("hidden", r !== "exhibitor"));
+        continueBtn.className = "btn " + (r === "visitor" ? "pink" : "blue");
+        continueBtn.innerHTML =
+          r === "visitor"
+            ? 'ลงทะเบียนผู้เข้าชม<span class="en" style="color:white">Continue as Visitor</span>'
+            : 'สมัครและเลือกพื้นที่<span class="en" style="color:white">Continue as Exhibitor</span>';
+        toggleOther();
+      }
+      function toggleOther() {
+        if (!categoryInput) return;
+        otherField.classList.toggle(
+          "hidden",
+          currentRole !== "exhibitor" || categoryInput.value !== "other",
+        );
+        otherInput.required =
+          currentRole === "exhibitor" && categoryInput.value === "other";
+      }
+      function submitSignup(e) {
+        e.preventDefault();
+        closeSignup();
+        if (currentRole === "visitor") {
+          visitorDash.classList.add("active");
+          visitorDash.scrollIntoView({ behavior: "smooth" });
+        } else {
+          currentExhibitor = {
+            name: businessInput.value.trim() || nameInput.value.trim(),
+            category:
+              categoryInput.value === "other"
+                ? otherInput.value
+                : categoryInput.value,
+            products: productsInput.value,
+            description: descriptionInput.value,
+            link: websiteInput.value || "#",
+          };
+          go("floor");
+        }
+      }
+      function go(id) {
+        document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+      }
+      renderBooths();
+      setRole("exhibitor");
+    </script>
+  </body>
+</html>

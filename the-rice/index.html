@@ -217,6 +217,10 @@
         grid-template-columns: 1fr 1fr;
         gap: 16px;
       }
+      .bookingGrid {
+        grid-template-columns: 1fr;
+        margin-top: 16px;
+      }
       .role,
       .panel {
         background: #fff;
@@ -319,7 +323,7 @@
         display: grid;
         grid-template-columns: 1fr 1.1fr 1fr;
         grid-template-areas:
-          "s1 s5 s2"
+          "s1 selected s2"
           "s3 s5 s4";
         gap: 14px;
       }
@@ -354,6 +358,12 @@
         align-items: center;
         justify-content: center;
         text-align: center;
+        min-height: 180px;
+      }
+      .selectedHub {
+        grid-area: selected;
+        border: 2px solid #b9ccf7;
+        background: linear-gradient(#ffffff, #f4f7ff);
         min-height: 390px;
       }
       .sectorHead {
@@ -663,8 +673,9 @@
           grid-template-columns: 1fr 1fr;
           grid-template-areas:
             "s1 s2"
-            "s5 s5"
-            "s3 s4";
+            "selected selected"
+            "s3 s4"
+            "s5 s5";
           gap: 7px;
         }
         .sector {
@@ -685,6 +696,9 @@
         }
         .s5 {
           min-height: 135px;
+        }
+        .selectedHub {
+          min-height: 230px;
         }
         .stageIcon {
           font-size: 32px;
@@ -856,19 +870,23 @@
                 </div>
                 <div id="zoneA" class="booths"></div>
               </section>
-              <section class="sector s5">
-                <div class="stageIcon">🎤</div>
-                <h3>โซน 5<span class="en">Sector 5</span></h3>
-                <b
-                  >บันเทิงและพื้นที่ส่วนกลาง<span class="en"
-                    >Entertainment & Common Area</span
-                  ></b
-                >
-                <p class="muted">
-                  เวที • กิจกรรม • ที่นั่ง • ทางเดิน<br /><span class="en"
-                    >Stage • Activities • Seating • Circulation</span
-                  >
-                </p>
+              <section class="sector selectedHub" id="selectedHub">
+                <h3>พื้นที่ที่เลือก<span class="en">Selected Space Details</span></h3>
+                <div id="selectedEmpty" class="muted">
+                  แตะพื้นที่ใดก็ได้เพื่อดูรายละเอียด<span class="en">Tap any space to see its details here.</span>
+                </div>
+                <div id="selectedCard" class="hidden">
+                  <div class="row"><span>พื้นที่ / Space</span><b id="selSpace"></b></div>
+                  <div class="row"><span>โซน / Sector</span><b id="selSector"></b></div>
+                  <button class="btn grad" onclick="holdSelected()">สำรอง 15 นาที<span class="en" style="color:white">Hold for 15 Minutes</span></button>
+                </div>
+                <div id="profileCard" class="profile">
+                  <div class="profileTop"><div class="profileLogo" id="profileLogo">R</div><div><h3 id="profileName" style="margin:0"></h3><div id="profileStatus" class="muted"></div></div></div>
+                  <div class="row"><span>พื้นที่ / Space</span><b id="profileSpace"></b></div>
+                  <div class="row"><span>ประเภท / Category</span><b id="profileCategory"></b></div>
+                  <p id="profileProducts"></p><p id="profileDescription" class="muted"></p>
+                  <a id="profileLink" target="_blank" rel="noopener">เว็บไซต์ / Website</a>
+                </div>
               </section>
               <section class="sector s2">
                 <div class="sectorHead">
@@ -900,50 +918,15 @@
                 </div>
                 <div id="zoneD" class="booths"></div>
               </section>
+              <section class="sector s5">
+                <div class="stageIcon">🎤</div>
+                <h3>โซน 5<span class="en">Sector 5</span></h3>
+                <b>บันเทิงและพื้นที่ส่วนกลาง<span class="en">Entertainment & Common Area</span></b>
+                <p class="muted">เวที • กิจกรรม • ที่นั่ง • ทางเดิน<br /><span class="en">Stage • Activities • Seating • Circulation</span></p>
+              </section>
             </div>
           </div>
           <div class="bookingGrid">
-            <div class="panel">
-              <h3>พื้นที่ที่เลือก<span class="en">Selected Space</span></h3>
-              <div id="selectedEmpty" class="muted">
-                แตะพื้นที่สีเขียวเพื่อเริ่มจอง<span class="en"
-                  >Tap a green space to begin.</span
-                >
-              </div>
-              <div id="selectedCard" class="hidden">
-                <div class="row">
-                  <span>พื้นที่ / Space</span><b id="selSpace"></b>
-                </div>
-                <div class="row">
-                  <span>โซน / Sector</span><b id="selSector"></b>
-                </div>
-                <button class="btn grad" onclick="holdSelected()">
-                  สำรอง 15 นาที<span class="en" style="color: white"
-                    >Hold for 15 Minutes</span
-                  >
-                </button>
-              </div>
-              <div id="profileCard" class="profile">
-                <div class="profileTop">
-                  <div class="profileLogo" id="profileLogo">R</div>
-                  <div>
-                    <h3 id="profileName" style="margin: 0"></h3>
-                    <div id="profileStatus" class="muted"></div>
-                  </div>
-                </div>
-                <div class="row">
-                  <span>พื้นที่ / Space</span><b id="profileSpace"></b>
-                </div>
-                <div class="row">
-                  <span>ประเภท / Category</span><b id="profileCategory"></b>
-                </div>
-                <p id="profileProducts"></p>
-                <p id="profileDescription" class="muted"></p>
-                <a id="profileLink" target="_blank" rel="noopener"
-                  >เว็บไซต์ / Website</a
-                >
-              </div>
-            </div>
             <div class="panel">
               <h3>
                 การจองและชำระเงิน<span class="en">Booking & Payment</span>
@@ -1338,6 +1321,9 @@
           selSpace.textContent = id;
           selSector.textContent = cats[id[0]];
         } else showProfile(id);
+        requestAnimationFrame(() =>
+          selectedHub.scrollIntoView({ behavior: "smooth", block: "center" }),
+        );
       }
       function showProfile(id) {
         selectedEmpty.classList.add("hidden");

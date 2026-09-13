@@ -440,6 +440,49 @@
         gap: 9px;
         margin: 12px 0;
       }
+      .paymentMethods {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin: 14px 0;
+      }
+      .paymentChoice {
+        padding: 13px;
+        border: 2px solid var(--line);
+        border-radius: 14px;
+        background: #fff;
+        color: var(--ink);
+        font-weight: 850;
+        cursor: pointer;
+      }
+      .paymentChoice.active {
+        border-color: var(--blue);
+        background: var(--blue-soft);
+      }
+      .payDetails {
+        padding: 15px;
+        border-radius: 16px;
+        background: #f5f8fd;
+        border: 1px solid var(--line);
+        margin-bottom: 12px;
+      }
+      .qrPlaceholder {
+        width: 150px;
+        height: 150px;
+        margin: 12px auto;
+        border: 2px dashed #aab5c8;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        color: var(--muted);
+        background: #fff;
+        font-size: 13px;
+      }
+      .slipField input {
+        width: 100%;
+        margin: 8px 0 12px;
+      }
       .pay {
         display: flex;
         gap: 10px;
@@ -571,6 +614,17 @@
         color: #7a8498;
         font-size: 13px;
         padding: 30px 0 50px;
+      }
+      .platformBy {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+      .platformBy img {
+        width: 150px;
+        height: auto;
       }
       @media (max-width: 900px) {
         .heroGrid,
@@ -918,6 +972,32 @@
                 <div id="bookingSuccess" class="notice success hidden">
                   <b>ยืนยันการจองแล้ว / Booking Confirmed</b><br />กรุณาชำระเงินภายใน 48 ชั่วโมง / Please complete payment within 48 hours.
                 </div>
+                <div id="paymentCheckout" class="hidden">
+                  <div class="row"><span>เลขที่การจอง / Booking Reference</span><b id="bookingReference">—</b></div>
+                  <div class="row"><span>พื้นที่ / Space</span><b id="paymentSpace">—</b></div>
+                  <div class="row"><span>ยอดชำระ / Amount</span><b>กำหนดโดยผู้จัดงาน / Set by organizer</b></div>
+                  <div class="row"><span>ชำระภายใน / Payment Due</span><b id="paymentDue">—</b></div>
+                  <div class="paymentMethods">
+                    <button id="bankChoice" class="paymentChoice active" type="button" onclick="selectPaymentMethod('bank')">โอนเข้าบัญชีงาน<span class="en">Event Bank Transfer</span></button>
+                    <button id="qrChoice" class="paymentChoice" type="button" onclick="selectPaymentMethod('qr')">HERO PAY QR<span class="en">Event PromptPay QR</span></button>
+                  </div>
+                  <div id="bankDetails" class="payDetails">
+                    <b>บัญชีรับเงินที่ผู้จัดงานอนุมัติ</b><span class="en">Organizer-authorized receiving account</span>
+                    <p>ธนาคาร ชื่อบัญชี และเลขที่บัญชีจะแสดงหลังได้รับอนุมัติจาก The Rice</p>
+                    <span class="en">Bank, account name and account number will appear after authorization by The Rice.</span>
+                  </div>
+                  <div id="qrDetails" class="payDetails hidden">
+                    <b>HERO PAY — PromptPay สำหรับงานนี้</b><span class="en">Event-specific HERO PAY PromptPay</span>
+                    <div class="qrPlaceholder">QR พร้อมยอดและเลขที่การจอง<br />QR with amount and booking reference</div>
+                    <span class="en">The authorized event QR will be inserted here.</span>
+                  </div>
+                  <div class="slipField">
+                    <label><b>อัปโหลดหลักฐานการชำระเงิน</b><span class="en">Upload Payment Slip</span></label>
+                    <input id="paymentSlip" type="file" accept="image/*,.pdf" />
+                  </div>
+                  <button class="btn blue" style="width:100%" type="button" onclick="submitPaymentSlip()">ส่งหลักฐานการชำระเงิน<span class="en" style="color:white">Submit Payment Slip</span></button>
+                </div>
+                <div id="paymentSubmitted" class="notice success hidden"><b>ได้รับหลักฐานการชำระเงินแล้ว</b><span class="en">Payment slip received—awaiting organizer verification.</span></div>
               </div>
             </div>
           </div>
@@ -1125,6 +1205,7 @@
       </div>
     </div>
     <footer class="footer">
+      <div class="platformBy"><span>ระบบโดย / Platform by</span><img src="hero-event-logo.jpg?v=1" alt="HERO Event" /></div>
       TheRice-Event • ระบบจองพื้นที่จัดงาน / Event Booking Platform
     </footer>
     <script>
@@ -1295,6 +1376,8 @@
         paymentBox.classList.remove("hidden");
         paymentFormWrap.classList.remove("hidden");
         bookingSuccess.classList.add("hidden");
+        paymentCheckout.classList.add("hidden");
+        paymentSubmitted.classList.add("hidden");
         countdown.textContent = "15:00";
         clearInterval(timer);
         timer = setInterval(() => {
@@ -1319,7 +1402,31 @@
         clearInterval(timer);
         paymentFormWrap.classList.add("hidden");
         bookingSuccess.classList.remove("hidden");
+        paymentCheckout.classList.remove("hidden");
+        paymentSubmitted.classList.add("hidden");
+        paymentSpace.textContent = selected;
+        bookingReference.textContent = "RICE-" + selected + "-" + String(Date.now()).slice(-6);
+        const due = new Date(Date.now() + 48 * 60 * 60 * 1000);
+        paymentDue.textContent = due.toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short" });
+        selectPaymentMethod("bank");
         showProfile(selected);
+      }
+      function selectPaymentMethod(method) {
+        bankChoice.classList.toggle("active", method === "bank");
+        qrChoice.classList.toggle("active", method === "qr");
+        bankDetails.classList.toggle("hidden", method !== "bank");
+        qrDetails.classList.toggle("hidden", method !== "qr");
+      }
+      function submitPaymentSlip() {
+        if (!paymentSlip.files.length) {
+          paymentSlip.setCustomValidity("Please upload a payment slip");
+          paymentSlip.reportValidity();
+          paymentSlip.addEventListener("change", () => paymentSlip.setCustomValidity(""), { once: true });
+          return;
+        }
+        paymentCheckout.classList.add("hidden");
+        bookingSuccess.classList.add("hidden");
+        paymentSubmitted.classList.remove("hidden");
       }
       function openSignup(r) {
         setRole(r);

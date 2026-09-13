@@ -440,6 +440,7 @@
         font-size: 30px;
         font-weight: 950;
       }
+      .profileLogo img{width:100%;height:100%;object-fit:contain;border-radius:inherit;background:white}
       .profileTop {
         display: flex;
         gap: 14px;
@@ -1355,7 +1356,8 @@
               category: booth.category || cats[booth.sector_code],
               products: booth.products || "",
               description: booth.business_description || "",
-              link: booth.business_link || "#",
+              link: booth.business_link || (booth.shop_slug ? `/the-rice/shop/?booth=${encodeURIComponent(booth.code)}` : "#"),
+              logo: booth.logo_path ? `https://ajbuenoxbsfmwhydvlxd.supabase.co/storage/v1/object/public/hero-event-shop-assets/${booth.logo_path}` : "",
             };
           }
           visitorCountValue.textContent = data.visitor_count || 0;
@@ -1385,7 +1387,7 @@
         const p = profiles[id];
         if (!p) return;
         profileCard.classList.add("open");
-        profileLogo.textContent = p.name[0];
+        profileLogo.innerHTML = p.logo ? `<img src="${p.logo}" alt="">` : p.name[0];
         profileName.textContent = p.name;
         profileSpace.textContent = id;
         profileCategory.textContent = p.category;
@@ -1594,6 +1596,20 @@
         continueBtn.textContent = "กำลังบันทึก... / Saving...";
         try {
           const category = categoryInput.value === "other" ? otherInput.value : categoryInput.value;
+          let logoBase64 = "", logoMime = "";
+          if (currentRole === "exhibitor" && shopImageInput.files.length) {
+            const logoFile = shopImageInput.files[0];
+            if (logoFile.size > 2 * 1024 * 1024) throw new Error("โลโก้ต้องไม่เกิน 2 MB / Logo must be 2 MB or smaller.");
+            if (!["image/jpeg","image/png","image/webp"].includes(logoFile.type)) throw new Error("โลโก้ต้องเป็น JPG, PNG หรือ WebP / Logo must be JPG, PNG or WebP.");
+            const logoData = await new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve(String(reader.result));
+              reader.onerror = reject;
+              reader.readAsDataURL(logoFile);
+            });
+            logoBase64 = String(logoData).split(",")[1];
+            logoMime = logoFile.type;
+          }
           const result = await callApi("register", {
             role: currentRole,
             full_name: nameInput.value,
@@ -1606,6 +1622,8 @@
             business_description: descriptionInput.value,
             presence_type: presenceInput.value,
             business_link: presenceInput.value === "link" ? websiteInput.value : "",
+            logo_base64: logoBase64,
+            logo_mime: logoMime,
           });
           currentRegistrationId = result.registration_id;
           closeSignup();
@@ -1653,6 +1671,5 @@
       setRole("exhibitor");
       loadLiveState();
     </script>
-  <!-- deploy: b30-full-logo-20260913 -->
   </body>
 </html>

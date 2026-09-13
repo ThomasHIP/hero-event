@@ -1148,6 +1148,37 @@
             link: "https://example.com",
           }),
       );
+      Object.assign(profiles, {
+        A03: {
+          name: "เป็ดจักรพรรดิ / Emperor Duck",
+          category: "โซน 1 อาหารและเครื่องดื่ม / Sector 1 Food & Drinks",
+          products:
+            "เป็ดย่าง อาหารพร้อมรับประทาน เบเกอรี่และของขวัญ / Roast duck, ready meals, bakery and gifts",
+          description:
+            "แบรนด์อาหารของจักรพรรดิฟู้ดส์ พร้อมสินค้าและข้อเสนอพิเศษภายในงาน / An Emperor Foods brand featuring event products and special offers.",
+          link: "https://emperor-foods.pages.dev/",
+        },
+        C08: {
+          name: "990 Club by HERO Academy",
+          category:
+            "โซน 3 การศึกษาและการพัฒนาอาชีพ / Sector 3 Education & Career Development",
+          products:
+            "เตรียมสอบ TOEIC แบบทดสอบ และหลักสูตรพัฒนาคะแนน / TOEIC preparation, mock tests and score-development programmes",
+          description:
+            "คะแนนคุณ อาชีพคุณ อนาคตคุณ / Your Score. Your Career. Your Future.",
+          link: "https://nine-ninety-club.vatisp.chatgpt.site/",
+        },
+        D04: {
+          name: "QR-Us Ordering System",
+          category:
+            "โซน 4 เทคโนโลยีและบริการธุรกิจ / Sector 4 Technology & Business Services",
+          products:
+            "ระบบสั่งอาหารและสินค้าผ่าน QR Code สำหรับร้านค้า / QR ordering system for restaurants and merchants",
+          description:
+            "รับออเดอร์จากลูกค้าโดยตรงผ่าน QR Code ในราคาหน้าร้าน / Receive direct customer orders through QR codes at shop prices.",
+          link: "https://qr-us.pages.dev/",
+        },
+      });
       function renderBooths() {
         for (const z of ["A", "B", "C", "D"]) {
           const e = document.getElementById("zone" + z);

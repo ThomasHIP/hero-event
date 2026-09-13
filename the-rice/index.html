@@ -441,6 +441,10 @@
         font-weight: 950;
       }
       .profileLogo img{width:100%;height:100%;object-fit:contain;border-radius:inherit;background:white}
+      .consentBox{display:flex;gap:10px;align-items:flex-start;margin:12px 0;padding:14px;border-radius:14px;font-weight:750}
+      .consentBox input{width:22px;height:22px;flex:0 0 22px;margin-top:2px}
+      .privacyConsent{background:#eaf3ff;border:2px solid #3b78df;color:#174f9f}
+      .refundConsent{background:#fff0f1;border:2px solid #e24755;color:#991f2d;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
       .profileTop {
         display: flex;
         gap: 14px;
@@ -1199,13 +1203,9 @@
               ><input id="shopImageInput" type="file" accept="image/*" />
             </div>
           </div>
-          <label style="display: flex; gap: 9px; margin: 15px 0"
-            ><input type="checkbox" required />
-            <span
-              >ยอมรับเงื่อนไข กติกาการจอง ความเป็นส่วนตัว และรับทราบว่าเมื่อชำระเงินแล้วไม่สามารถยกเลิกหรือขอคืนเงินได้ทุกกรณี<span class="en"
-                >I agree to the event terms, booking rules and privacy consent, and acknowledge that completed payments are non-cancellable and non-refundable.</span
-              ></span
-            ></label
+          <label class="consentBox privacyConsent exhibOnly"><input id="publishConsent" type="checkbox"><span>ยอมรับเรื่องความเป็นส่วนตัว และอนุญาตให้เผยแพร่ข้อมูลร้านค้าในงานและหน้าออนไลน์<span class="en">I accept the privacy terms and authorize publication of my shop information on the event and online pages.</span></span></label>
+          <label class="consentBox refundConsent exhibOnly"><input id="refundConsent" type="checkbox"><span>รับทราบว่า ในการจองและชำระเงิน ไม่สามารถยกเลิกและขอเงินคืนได้ในทุกกรณี<span class="en">I acknowledge that the booking and payment cannot be cancelled or refunded under any circumstances.</span></span></label>
+          <label class="consentBox privacyConsent visitorOnly"><input id="visitorConsent" type="checkbox"><span>ยอมรับเงื่อนไขและความเป็นส่วนตัว<span class="en">I agree to the event terms and privacy consent.</span></span></label>
           ><button id="continueBtn" class="btn blue" style="width: 100%">
             ดำเนินการต่อ<span class="en" style="color: white">Continue</span>
           </button>
@@ -1576,6 +1576,9 @@
         productsInput.required = r === "exhibitor";
         descriptionInput.required = r === "exhibitor";
         presenceInput.required = r === "exhibitor";
+        publishConsent.required = r === "exhibitor";
+        refundConsent.required = r === "exhibitor";
+        visitorConsent.required = r === "visitor";
         toggleOther();
         togglePresence();
       }
@@ -1653,6 +1656,8 @@
             business_link: presenceInput.value === "link" ? websiteInput.value : "",
             logo_base64: logoBase64,
             logo_mime: logoMime,
+            publish_consent: currentRole === "exhibitor" ? publishConsent.checked : false,
+            no_refund_ack: currentRole === "exhibitor" ? refundConsent.checked : false,
           });
           currentRegistrationId = result.registration_id;
           closeSignup();

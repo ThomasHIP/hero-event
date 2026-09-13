@@ -960,6 +960,11 @@
                     >After booking, payment is due within 48 hours.</span
                   >
                 </p>
+                <div class="notice" style="border:2px solid #e34a55;background:#fff0f1;color:#8b1f2a">
+                  <b>คำเตือน: เมื่อชำระเงินแล้ว ไม่สามารถยกเลิกการจองและไม่คืนเงินทุกกรณี</b>
+                  <span class="en">Warning: Once payment is made, the booking cannot be cancelled and no refund will be provided under any circumstances.</span>
+                </div>
+                <label style="display:flex;gap:9px;margin:15px 0"><input id="bookingNoRefundAck" type="checkbox"><span>ข้าพเจ้ารับทราบและยอมรับเงื่อนไขนี้<span class="en">I acknowledge and accept this condition.</span></span></label>
                 <button class="btn blue" onclick="confirmPending()">
                   ยืนยันการจอง<span class="en" style="color: white"
                     >Confirm Booking</span
@@ -992,6 +997,11 @@
                     <label><b>อัปโหลดหลักฐานการชำระเงิน</b><span class="en">Upload Payment Slip</span></label>
                     <input id="paymentSlip" type="file" accept="image/*,.pdf" />
                   </div>
+                  <div class="notice" style="border:2px solid #e34a55;background:#fff0f1;color:#8b1f2a">
+                    <b>เมื่อชำระเงินแล้ว ไม่สามารถยกเลิกและไม่คืนเงินทุกกรณี</b>
+                    <span class="en">After payment, this booking is non-cancellable and non-refundable under all circumstances.</span>
+                  </div>
+                  <label style="display:flex;gap:9px;margin:15px 0"><input id="paymentNoRefundAck" type="checkbox"><span>ข้าพเจ้ารับทราบก่อนส่งหลักฐานการชำระเงิน<span class="en">I acknowledge this before submitting payment proof.</span></span></label>
                   <button class="btn blue" style="width:100%" type="button" onclick="submitPaymentSlip()">ส่งหลักฐานการชำระเงิน<span class="en" style="color:white">Submit Payment Slip</span></button>
                 </div>
                 <div id="paymentSubmitted" class="notice success hidden"><b>ได้รับหลักฐานการชำระเงินแล้ว</b><span class="en">Payment slip received—awaiting organizer verification.</span></div>
@@ -1190,9 +1200,8 @@
           <label style="display: flex; gap: 9px; margin: 15px 0"
             ><input type="checkbox" required />
             <span
-              >ยอมรับเงื่อนไข กติกาการจอง และความเป็นส่วนตัว<span class="en"
-                >I agree to the event terms, booking rules and privacy
-                consent.</span
+              >ยอมรับเงื่อนไข กติกาการจอง ความเป็นส่วนตัว และรับทราบว่าเมื่อชำระเงินแล้วไม่สามารถยกเลิกหรือขอคืนเงินได้ทุกกรณี<span class="en"
+                >I agree to the event terms, booking rules and privacy consent, and acknowledge that completed payments are non-cancellable and non-refundable.</span
               ></span
             ></label
           ><button id="continueBtn" class="btn blue" style="width: 100%">
@@ -1458,10 +1467,16 @@
         }
       }
       async function confirmPending() {
+        if (!bookingNoRefundAck.checked) {
+          showMessage("กรุณายืนยันการรับทราบเงื่อนไขไม่ยกเลิกและไม่คืนเงิน / Please acknowledge the no-cancellation and no-refund condition.", true);
+          bookingNoRefundAck.focus();
+          return;
+        }
         try {
         const result = await callApi("confirm", {
           reservation_id: currentReservationId,
           token: currentReservationToken,
+          no_refund_ack: true,
         });
         clearInterval(timer);
         paymentFormWrap.classList.add("hidden");
@@ -1486,6 +1501,11 @@
         qrDetails.classList.toggle("hidden", method !== "qr");
       }
       async function submitPaymentSlip() {
+        if (!paymentNoRefundAck.checked) {
+          showMessage("กรุณายืนยันการรับทราบเงื่อนไขไม่ยกเลิกและไม่คืนเงิน / Please acknowledge the no-cancellation and no-refund condition.", true);
+          paymentNoRefundAck.focus();
+          return;
+        }
         if (!paymentSlip.files.length) {
           paymentSlip.setCustomValidity("Please upload a payment slip");
           paymentSlip.reportValidity();
@@ -1511,6 +1531,7 @@
             file_name: file.name,
             mime_type: file.type,
             file_base64: String(dataUrl).split(",")[1],
+            no_refund_ack: true,
           });
         paymentCheckout.classList.add("hidden");
         bookingSuccess.classList.add("hidden");

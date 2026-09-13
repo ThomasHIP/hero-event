@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HERO Event Admin Demo</title>
+<style>
+:root{--pink:#ef3f98;--blue:#2479df;--navy:#14294b;--green:#20ad69;--amber:#f4b52f;--red:#e84b5f;--line:#dce4f1;--bg:#f5f7fc}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,"Noto Sans Thai",system-ui,sans-serif;background:var(--bg);color:var(--navy)}button,input{font:inherit}.wrap{width:min(1080px,calc(100% - 28px));margin:auto}.en{display:block;color:#66728a;font-size:.88em;margin-top:3px}header{background:#fff;border-bottom:1px solid var(--line);padding:15px 0}.bar{display:flex;align-items:center;justify-content:space-between;gap:15px}.logo{width:190px}.back{color:var(--blue);font-weight:850}.login{width:min(470px,calc(100% - 28px));margin:55px auto;background:#fff;border:1px solid var(--line);border-radius:28px;padding:30px;box-shadow:0 22px 55px #233c6818}.login h1{margin:0 0 8px;font-size:34px}.demoTag{display:inline-block;background:#fff0f7;color:#c62878;border-radius:999px;padding:7px 12px;font-weight:850;margin:8px 0 18px}.field{margin:14px 0}.field label{display:block;font-weight:800;margin-bottom:7px}.field input{width:100%;padding:14px;border:1.5px solid #cfd9e8;border-radius:12px}.btn{border:0;border-radius:14px;padding:14px 18px;background:linear-gradient(90deg,var(--pink),var(--blue));color:white;font-weight:900;cursor:pointer;width:100%}.note{font-size:14px;line-height:1.5;color:#67738a;margin-top:15px}.dash{display:none;padding:30px 0 60px}.dash.active{display:block}.top{display:flex;justify-content:space-between;align-items:end;gap:15px;flex-wrap:wrap}.top h1{margin:0;font-size:38px}.logout{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 14px;color:var(--navy);font-weight:800}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0}.stat{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px}.stat b{font-size:31px;display:block}.green{color:var(--green)}.amber{color:#be8200}.red{color:var(--red)}.blue{color:var(--blue)}.grid{display:grid;grid-template-columns:1.4fr .9fr;gap:16px}.panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px}.panel h2{margin:0 0 14px}.row{display:grid;grid-template-columns:1fr auto;gap:12px;padding:13px 0;border-bottom:1px solid #edf0f5}.row:last-child{border:0}.status{padding:6px 9px;border-radius:999px;font-size:13px;font-weight:850;background:#fff0c8;color:#7e5a00}.status.paid{background:#dff7e9;color:#087441}.action{display:grid;gap:10px}.action button{background:#fff;border:1.5px solid var(--blue);color:var(--blue);border-radius:12px;padding:12px;text-align:left;font-weight:850}.safe{margin-top:16px;background:#edf5ff;border-radius:14px;padding:14px;color:#315276;line-height:1.45}@media(max-width:720px){.stats{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}.logo{width:160px}.top h1{font-size:30px}} 
+</style>
+</head>
+<body>
+<header><div class="wrap bar"><img class="logo" src="/the-rice/hero-event-logo.jpg" alt="HERO Event"><a class="back" href="/">← กลับหน้าหลัก / Back</a></div></header>
+<section id="login" class="login">
+<div class="demoTag">SAFE DEMONSTRATION</div>
+<h1>เข้าสู่ระบบผู้จัดงาน<span class="en">Organizer Admin Login</span></h1>
+<p>ทดลองดูขั้นตอนเข้าสู่ระบบและ Dashboard ด้วยข้อมูลตัวอย่าง</p>
+<div class="field"><label>อีเมล / Email</label><input id="email" type="email" value="demo@hero-event.com" readonly></div>
+<div class="field"><label>รหัสผ่านทดลอง / Demo password</label><input id="password" type="password" value="HERO-DEMO" readonly></div>
+<button class="btn" id="loginBtn">เข้าสู่ Dashboard / Open Dashboard</button>
+<p class="note">หน้านี้เป็นการสาธิตเท่านั้น ไม่เชื่อมต่อข้อมูลผู้แสดงสินค้าจริง และไม่สามารถอนุมัติการชำระเงินจริงได้</p>
+</section>
+<main id="dashboard" class="dash"><div class="wrap">
+<div class="top"><div><span class="demoTag">DEMO MODE</span><h1>Dashboard ผู้จัดงาน<span class="en">Organizer Dashboard</span></h1><p>The Rice Event · ข้อมูลตัวอย่าง / Sample data</p></div><button class="logout" id="logoutBtn">ออกจากระบบ / Log out</button></div>
+<div class="stats"><div class="stat"><span>พื้นที่ทั้งหมด</span><b class="blue">120</b><span class="en">Total booths</span></div><div class="stat"><span>ว่าง</span><b class="green">103</b><span class="en">Available</span></div><div class="stat"><span>รอชำระ</span><b class="amber">5</b><span class="en">Awaiting payment</span></div><div class="stat"><span>ชำระแล้ว</span><b class="red">12</b><span class="en">Paid</span></div></div>
+<div class="grid"><section class="panel"><h2>รายการล่าสุด<span class="en">Recent bookings</span></h2>
+<div class="row"><div><b>B30 · 990 Club</b><span class="en">RICE-B30-595495</span></div><span class="status">รอตรวจสลิป</span></div>
+<div class="row"><div><b>A17 · Bangkok Creative</b><span class="en">RICE-A17-418220</span></div><span class="status paid">ชำระแล้ว</span></div>
+<div class="row"><div><b>B26 · Green Market</b><span class="en">RICE-B26-302184</span></div><span class="status paid">ชำระแล้ว</span></div>
+<div class="row"><div><b>A08 · Local Makers</b><span class="en">RICE-A08-199873</span></div><span class="status">รอชำระ</span></div>
+</section><section class="panel"><h2>งานที่ทำได้<span class="en">Admin actions</span></h2><div class="action">
+<button>ตรวจสอบหลักฐานการชำระเงิน<br><span class="en">Review payment slips</span></button>
+<button>จัดการบูธและผู้แสดงสินค้า<br><span class="en">Manage booths and exhibitors</span></button>
+<button>ส่งคำเชิญและลิงก์ชำระเงิน<br><span class="en">Send invitations and payment links</span></button>
+<button>ดาวน์โหลดรายงาน<br><span class="en">Download reports</span></button>
+</div><div class="safe"><b>สิทธิ์ตามระดับผู้ดูแล</b><span class="en">Actions shown to each administrator depend on their assigned role.</span></div></section></div>
+</div></main>
+<script>
+const login=document.getElementById('login'),dash=document.getElementById('dashboard');
+document.getElementById('loginBtn').onclick=()=>{login.style.display='none';dash.classList.add('active');scrollTo(0,0)};
+document.getElementById('logoutBtn').onclick=()=>{dash.classList.remove('active');login.style.display='block';scrollTo(0,0)};
+</script>
+</body></html>

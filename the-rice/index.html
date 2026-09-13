@@ -238,6 +238,58 @@
         font-size: 25px;
         margin: 0 0 8px;
       }
+      .pricingShell {
+        background: linear-gradient(145deg, #fff0f7, #eef4ff);
+        border: 1px solid #e1dced;
+        border-radius: 28px;
+        padding: 28px;
+      }
+      .priceGrid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin: 20px 0;
+      }
+      .priceCard {
+        background: #fff;
+        border: 2px solid #e1e6f0;
+        border-radius: 22px;
+        padding: 24px;
+      }
+      .priceCard.fixed { border-color: var(--pink); }
+      .priceCard.successPlan { border-color: var(--blue); }
+      .priceLabel {
+        font-weight: 900;
+        color: var(--muted);
+      }
+      .priceAmount {
+        margin: 8px 0 5px;
+        font-size: clamp(34px, 5vw, 52px);
+        line-height: 1;
+        font-weight: 950;
+      }
+      .fixed .priceAmount { color: #d92f83; }
+      .successPlan .priceAmount { color: var(--blue); }
+      .featureGrid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+      .featureItem {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 15px;
+        padding: 13px;
+        font-weight: 800;
+      }
+      .fastPageHighlight {
+        margin-top: 18px;
+        padding: 20px;
+        border-radius: 20px;
+        color: #fff;
+        background: linear-gradient(100deg, #e93f95, #315fe0);
+      }
+      .fastPageHighlight h3 { margin: 0 0 7px; font-size: 25px; }
       .benefit {
         display: flex;
         gap: 10px;
@@ -653,9 +705,11 @@
       @media (max-width: 900px) {
         .heroGrid,
         .roleGrid,
-        .bookingGrid {
+        .bookingGrid,
+        .priceGrid {
           grid-template-columns: 1fr;
         }
+        .featureGrid { grid-template-columns: 1fr 1fr; }
         .eventCard h1 {
           font-size: 42px;
         }
@@ -664,6 +718,13 @@
         .navlinks {
           display: none;
         }
+        .navlinks.priceOnly {
+          display: flex;
+          margin-left: auto;
+        }
+        .navlinks.priceOnly button { padding: 8px 9px; }
+        .featureGrid { grid-template-columns: 1fr; }
+        .pricingShell { padding: 18px; }
         .eventCard {
           padding: 24px;
         }
@@ -737,6 +798,9 @@
           ><button onclick="go('floor')">
             แผนผัง<span class="en">Floor Plan</span>
           </button>
+        </div>
+        <div class="navlinks priceOnly" style="margin-left:0">
+          <button onclick="go('price')">ราคา<span class="en">Price</span></button>
         </div>
         <button class="btn grad" onclick="openSignup('exhibitor')">
           จองพื้นที่<span class="en" style="color: white">Book a Space</span>
@@ -841,6 +905,55 @@
                 >
               </button>
             </article>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="price">
+        <div class="wrap">
+          <div class="pricingShell">
+            <div class="sectionHead">
+              <div>
+                <h2>ราคา HERO Event<span class="en">HERO Event Pricing</span></h2>
+                <p class="muted">เลือกค่าใช้บริการแบบเดียวก่อนเปิดรับจองพื้นที่ <span class="en">Choose one pricing option before booth sales open.</span></p>
+              </div>
+            </div>
+            <div class="priceGrid">
+              <article class="priceCard fixed">
+                <div class="priceLabel">ตัวเลือก 1 · เหมาจ่าย<span class="en">Option 1 · Fixed Fee</span></div>
+                <div class="priceAmount">9,900 บาท</div>
+                <b>ต่องาน ไม่จำกัดจำนวนบูธ</b>
+                <span class="en">Per event, regardless of booth count</span>
+              </article>
+              <article class="priceCard successPlan">
+                <div class="priceLabel">ตัวเลือก 2 · จ่ายตามความสำเร็จ<span class="en">Option 2 · Success Based</span></div>
+                <div class="priceAmount">3%</div>
+                <b>จากยอดจองบูธที่ยืนยันแล้ว</b>
+                <span class="en">Of total confirmed booth-booking value</span>
+                <p class="muted" style="margin-bottom:0">ขั้นต่ำ 4,900 บาทต่องาน / Minimum ฿4,900 per event</p>
+              </article>
+            </div>
+            <h3>ครบทุกขั้นตอนการจองพื้นที่<span class="en">Complete Event-Space Booking Features</span></h3>
+            <div class="featureGrid">
+              <div class="featureItem">✓ หน้าเว็บไซต์เฉพาะงาน<span class="en">Branded event page</span></div>
+              <div class="featureItem">✓ แผนผังบูธแบบเรียลไทม์<span class="en">Interactive live floor plan</span></div>
+              <div class="featureItem">✓ แสดงสถานะพื้นที่<span class="en">Live booth availability</span></div>
+              <div class="featureItem">✓ สำรองพื้นที่ 15 นาที<span class="en">15-minute booth hold</span></div>
+              <div class="featureItem">✓ ลงทะเบียนผู้แสดงสินค้า<span class="en">Exhibitor registration</span></div>
+              <div class="featureItem">✓ รองรับการจองหลายบูธ<span class="en">Multiple-booth booking</span></div>
+              <div class="featureItem">✓ กำหนดชำระภายใน 48 ชั่วโมง<span class="en">48-hour payment period</span></div>
+              <div class="featureItem">✓ โอนธนาคารหรือ PromptPay<span class="en">Bank transfer or PromptPay</span></div>
+              <div class="featureItem">✓ อัปโหลดหลักฐานการชำระเงิน<span class="en">Payment-slip upload</span></div>
+              <div class="featureItem">✓ ผู้จัดงานตรวจสอบและอนุมัติ<span class="en">Organizer verification</span></div>
+              <div class="featureItem">✓ อีเมลแจ้งเตือนอัตโนมัติ<span class="en">Automatic email notifications</span></div>
+              <div class="featureItem">✓ Dashboard สำหรับผู้จัดงาน<span class="en">Organizer dashboard</span></div>
+            </div>
+            <div class="fastPageHighlight">
+              <h3>จุดเด่นเฉพาะ HERO Event</h3>
+              <b>สร้างหน้าร้านออนไลน์ฟรีให้ผู้แสดงสินค้าทุกบูธโดยอัตโนมัติ</b>
+              <span class="en" style="color:#fff">Automatically create a free online shop profile for every exhibitor using their registration details and uploaded logo.</span>
+              <p style="margin:12px 0 0"><b>พร้อมเสนออัปเกรดเป็น HERO FastPage</b> — เพิ่มสินค้า รูปภาพ โปรโมชั่น LINE และ QR Code</p>
+            </div>
+            <p class="muted" style="margin-bottom:0">* งานที่ต้องออกแบบแผนผังซับซ้อน เชื่อมต่อระบบรับชำระเงิน หรือมีทีมงานหน้างาน ประเมินเพิ่มเติมตามขอบเขตงาน</p>
           </div>
         </div>
       </section>

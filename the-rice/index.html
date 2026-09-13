@@ -1220,6 +1220,7 @@
     <script>
       const API_URL = "https://ajbuenoxbsfmwhydvlxd.supabase.co/functions/v1/hero-event-api";
       const API_KEY = "sb_publishable_oron-nE6v6FSF_YPckMCGA_4QHstvwm";
+      const invitationToken = new URLSearchParams(location.search).get("invite") || "";
       async function callApi(action, payload = {}) {
         const response = await fetch(API_URL, {
           method: "POST",
@@ -1658,6 +1659,7 @@
             logo_mime: logoMime,
             publish_consent: currentRole === "exhibitor" ? publishConsent.checked : false,
             no_refund_ack: currentRole === "exhibitor" ? refundConsent.checked : false,
+            invite_token: invitationToken,
           });
           currentRegistrationId = result.registration_id;
           closeSignup();
@@ -1701,9 +1703,29 @@
       function go(id) {
         document.getElementById(id).scrollIntoView({ behavior: "smooth" });
       }
+      async function openInvitation() {
+        if (!invitationToken) return;
+        try {
+          const data = await callApi("invite_get", { token: invitationToken });
+          const p = data.invite.prefill || {};
+          setRole("exhibitor");
+          nameInput.value = p.full_name || "";
+          mobileInput.value = p.mobile || "";
+          emailInput.value = data.invite.email || "";
+          businessInput.value = p.business_name || "";
+          productsInput.value = p.products || "";
+          descriptionInput.value = p.business_description || "";
+          if (p.category) { categoryInput.value = "other"; otherInput.value = p.category; }
+          if (p.business_link) { presenceInput.value = "link"; websiteInput.value = p.business_link; }
+          toggleOther(); togglePresence();
+          if (p.desired_booth && status[p.desired_booth] === "available") spaceClick(p.desired_booth);
+          signupModal.classList.add("open");
+          showMessage("ผู้จัดงานกรอกข้อมูลไว้แล้ว กรุณาตรวจสอบและยอมรับเงื่อนไขทั้งสองข้อ / Please review the prefilled details and accept both conditions.");
+        } catch (error) { showMessage(error.message, true); }
+      }
       renderBooths();
       setRole("exhibitor");
-      loadLiveState();
+      loadLiveState().then(openInvitation);
     </script>
   </body>
 </html>

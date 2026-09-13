@@ -1057,12 +1057,45 @@
                 ></label
               ><textarea id="descriptionInput"></textarea>
             </div>
-            <div class="field exhibOnly">
+            <div class="field full exhibOnly">
               <label
-                >เว็บไซต์หรือโซเชียลมีเดีย<span class="en"
-                  >Website or Social Media</span
+                >เลือกรูปแบบหน้าแนะนำร้านค้า<span class="en"
+                  >Choose Your Business Profile</span
                 ></label
-              ><input id="websiteInput" placeholder="https://" />
+              ><select id="presenceInput" onchange="togglePresence()" required>
+                <option value="profile">
+                  ใช้หน้าโปรไฟล์ HERO Event ฟรี / Free HERO Event Profile
+                </option>
+                <option value="link">
+                  เชื่อม Facebook หรือเว็บไซต์ที่มีอยู่ / Use Existing Social
+                  or Website Link
+                </option>
+                <option value="fastpage">
+                  สร้าง HERO FastPage / Create a HERO FastPage
+                </option>
+              </select>
+            </div>
+            <div id="existingLinkField" class="field full exhibOnly hidden">
+              <label
+                >Facebook, LINE OA, TikTok หรือเว็บไซต์<span class="en"
+                  >Facebook, LINE OA, TikTok or Website</span
+                ></label
+              ><div style="display: flex; gap: 8px">
+                <input id="websiteInput" type="url" placeholder="https://" />
+                <button class="btn ghost" type="button" onclick="testBusinessLink()">
+                  ทดสอบ<span class="en">Test</span>
+                </button>
+              </div>
+            </div>
+            <div id="fastPageField" class="field full exhibOnly hidden">
+              <div class="notice">
+                สร้างหน้าแนะนำธุรกิจจากข้อมูลการลงทะเบียนนี้
+                โดยไม่ต้องกรอกข้อมูลซ้ำ
+                <span class="en"
+                  >Create an editable business page from this registration
+                  without entering the information again.</span
+                >
+              </div>
             </div>
             <div class="field exhibOnly">
               <label
@@ -1227,6 +1260,7 @@
         profileProducts.textContent = p.products;
         profileDescription.textContent = p.description;
         profileLink.href = p.link;
+        profileLink.style.display = p.link && p.link !== "#" ? "inline" : "none";
         profileStatus.textContent =
           status[id] === "hold"
             ? "จองแล้ว รอชำระภายใน 48 ชั่วโมง / Awaiting payment within 48 hours"
@@ -1295,6 +1329,7 @@
             ? 'ลงทะเบียนผู้เข้าชม<span class="en" style="color:white">Continue as Visitor</span>'
             : 'สมัครและเลือกพื้นที่<span class="en" style="color:white">Continue as Exhibitor</span>';
         toggleOther();
+        togglePresence();
       }
       function toggleOther() {
         if (!categoryInput) return;
@@ -1304,6 +1339,28 @@
         );
         otherInput.required =
           currentRole === "exhibitor" && categoryInput.value === "other";
+      }
+      function togglePresence() {
+        if (!presenceInput) return;
+        const isExhibitor = currentRole === "exhibitor";
+        existingLinkField.classList.toggle(
+          "hidden",
+          !isExhibitor || presenceInput.value !== "link",
+        );
+        fastPageField.classList.toggle(
+          "hidden",
+          !isExhibitor || presenceInput.value !== "fastpage",
+        );
+        websiteInput.required =
+          isExhibitor && presenceInput.value === "link";
+      }
+      function testBusinessLink() {
+        const value = websiteInput.value.trim();
+        if (!value) {
+          websiteInput.focus();
+          return;
+        }
+        window.open(value, "_blank", "noopener");
       }
       function submitSignup(e) {
         e.preventDefault();
@@ -1320,7 +1377,11 @@
                 : categoryInput.value,
             products: productsInput.value,
             description: descriptionInput.value,
-            link: websiteInput.value || "#",
+            link:
+              presenceInput.value === "link"
+                ? websiteInput.value
+                : "#",
+            presence: presenceInput.value,
           };
           go("floor");
         }

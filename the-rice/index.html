@@ -1073,11 +1073,11 @@
             </div>
             <div class="field">
               <label>โทรศัพท์มือถือ<span class="en">Mobile</span></label
-              ><input required inputmode="tel" />
+              ><input id="mobileInput" required inputmode="tel" />
             </div>
             <div class="field">
               <label>อีเมล<span class="en">Email</span></label
-              ><input type="email" required />
+              ><input id="emailInput" type="email" required />
             </div>
             <div class="field visitorOnly">
               <label
@@ -1174,7 +1174,7 @@
                 >โลโก้หรือภาพร้านค้า<span class="en"
                   >Logo or Shop Image</span
                 ></label
-              ><input type="file" accept="image/*" />
+              ><input id="shopImageInput" type="file" accept="image/*" />
             </div>
           </div>
           <label style="display: flex; gap: 9px; margin: 15px 0"
@@ -1196,6 +1196,18 @@
       TheRice-Event • ระบบจองพื้นที่จัดงาน / Event Booking Platform
     </footer>
     <script>
+      const API_URL = "https://ajbuenoxbsfmwhydvlxd.supabase.co/functions/v1/hero-event-api";
+      const API_KEY = "sb_publishable_oron-nE6v6FSF_YPckMCGA_4QHstvwm";
+      async function callApi(action, payload = {}) {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", apikey: API_KEY },
+          body: JSON.stringify({ action, ...payload }),
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || "Please try again.");
+        return result;
+      }
       const cats = {
         A: "โซน 1 อาหารและเครื่องดื่ม / Sector 1 Food & Drinks",
         B: "โซน 2 สินค้าทั่วไป / Sector 2 Open Items",
@@ -1206,7 +1218,11 @@
         currentRole = "exhibitor",
         timer,
         remaining = 900,
-        currentExhibitor = {};
+        currentExhibitor = {},
+        currentRegistrationId = null,
+        currentReservationId = null,
+        currentReservationToken = null,
+        currentPaymentMethod = "bank";
       const booked = new Set([
           "A03",
           "A11",
@@ -1310,6 +1326,27 @@
           <div class="reportRow availableCount"><span>คงเหลือ<br><small class="en">Available</small></span><span>${a} ร้าน 💚</span></div>
         `;
       }
+      async function loadLiveState() {
+        try {
+          const data = await callApi("state");
+          for (const booth of data.booths || []) {
+            status[booth.code] = booth.status === "available" ? "available" :
+              (booth.status === "held" || booth.status === "awaiting_payment") ? "hold" : "booked";
+            if (booth.exhibitor_name) profiles[booth.code] = {
+              name: booth.exhibitor_name,
+              category: booth.category || cats[booth.sector_code],
+              products: booth.products || "",
+              description: booth.business_description || "",
+              link: booth.business_link || "#",
+            };
+          }
+          visitorCountValue.textContent = data.visitor_count || 0;
+          visitorCountValueEn.textContent = data.visitor_count || 0;
+          renderBooths();
+        } catch (error) {
+          console.error("Live data unavailable", error);
+        }
+      }
       function spaceClick(id) {
         selected = id;
         renderBooths();
@@ -1343,13 +1380,20 @@
             ? "จองแล้ว รอชำระภายใน 48 ชั่วโมง / Awaiting payment within 48 hours"
             : "ชำระเงินแล้วและยืนยันพื้นที่ / Paid and confirmed";
       }
-      function holdSelected() {
+      async function holdSelected() {
         if (!selected) return;
         if (!currentExhibitor.name) {
           openSignup("exhibitor");
           return;
         }
         const heldSpace = selected;
+        try {
+          const result = await callApi("hold", {
+            registration_id: currentRegistrationId,
+            booth_code: heldSpace,
+          });
+          currentReservationId = result.reservation_id;
+          currentReservationToken = result.token;
         status[heldSpace] = "hold";
         profiles[heldSpace] = {
           name: currentExhibitor.name || "ร้านค้าของคุณ / Your Business",
@@ -1359,7 +1403,7 @@
           description: currentExhibitor.description || "",
           link: currentExhibitor.link || "#",
         };
-        remaining = 900;
+        remaining = Math.max(1, Math.floor((new Date(result.hold_expires_at) - Date.now()) / 1000));
         renderBooths();
         selectedCard.classList.add("hidden");
         paymentEmpty.classList.add("hidden");
@@ -1387,36 +1431,70 @@
             renderBooths();
           }
         }, 1000);
+        } catch (error) {
+          alert(error.message);
+          await loadLiveState();
+        }
       }
-      function confirmPending() {
+      async function confirmPending() {
+        try {
+        const result = await callApi("confirm", {
+          reservation_id: currentReservationId,
+          token: currentReservationToken,
+        });
         clearInterval(timer);
         paymentFormWrap.classList.add("hidden");
         bookingSuccess.classList.remove("hidden");
         paymentCheckout.classList.remove("hidden");
         paymentSubmitted.classList.add("hidden");
         paymentSpace.textContent = selected;
-        bookingReference.textContent = "RICE-" + selected + "-" + String(Date.now()).slice(-6);
-        const due = new Date(Date.now() + 48 * 60 * 60 * 1000);
+        bookingReference.textContent = result.booking_reference;
+        const due = new Date(result.payment_due_at);
         paymentDue.textContent = due.toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short" });
         selectPaymentMethod("bank");
         showProfile(selected);
+        alert(result.email_sent ? "ยืนยันการจองแล้ว และส่งอีเมลแล้ว / Booking confirmed and email sent." : "ยืนยันการจองแล้ว / Booking confirmed. Email delivery requires checking.");
+        } catch (error) { alert(error.message); await loadLiveState(); }
       }
       function selectPaymentMethod(method) {
+        currentPaymentMethod = method;
         bankChoice.classList.toggle("active", method === "bank");
         qrChoice.classList.toggle("active", method === "qr");
         bankDetails.classList.toggle("hidden", method !== "bank");
         qrDetails.classList.toggle("hidden", method !== "qr");
       }
-      function submitPaymentSlip() {
+      async function submitPaymentSlip() {
         if (!paymentSlip.files.length) {
           paymentSlip.setCustomValidity("Please upload a payment slip");
           paymentSlip.reportValidity();
           paymentSlip.addEventListener("change", () => paymentSlip.setCustomValidity(""), { once: true });
           return;
         }
+        const file = paymentSlip.files[0];
+        if (file.size > 5 * 1024 * 1024) {
+          alert("ไฟล์ต้องไม่เกิน 5 MB / File must be 5 MB or smaller.");
+          return;
+        }
+        try {
+          const dataUrl = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+          const result = await callApi("payment", {
+            reservation_id: currentReservationId,
+            token: currentReservationToken,
+            method: currentPaymentMethod === "qr" ? "promptpay" : "bank",
+            file_name: file.name,
+            mime_type: file.type,
+            file_base64: String(dataUrl).split(",")[1],
+          });
         paymentCheckout.classList.add("hidden");
         bookingSuccess.classList.add("hidden");
         paymentSubmitted.classList.remove("hidden");
+          alert(result.email_sent ? "ส่งหลักฐานและอีเมลยืนยันแล้ว / Slip and confirmation email sent." : "ส่งหลักฐานแล้ว / Slip submitted. Email delivery requires checking.");
+        } catch (error) { alert(error.message); }
       }
       function openSignup(r) {
         setRole(r);
@@ -1488,10 +1566,30 @@
           websiteInput.addEventListener("input", () => websiteInput.setCustomValidity(""), { once: true });
         }
       }
-      function submitSignup(e) {
+      async function submitSignup(e) {
         e.preventDefault();
-        closeSignup();
+        const original = continueBtn.innerHTML;
+        continueBtn.disabled = true;
+        continueBtn.textContent = "กำลังบันทึก... / Saving...";
+        try {
+          const category = categoryInput.value === "other" ? otherInput.value : categoryInput.value;
+          const result = await callApi("register", {
+            role: currentRole,
+            full_name: nameInput.value,
+            mobile: mobileInput.value,
+            email: emailInput.value,
+            osk_batch: oskInput.value,
+            business_name: businessInput.value,
+            category,
+            products: productsInput.value,
+            business_description: descriptionInput.value,
+            presence_type: presenceInput.value,
+            business_link: presenceInput.value === "link" ? websiteInput.value : "",
+          });
+          currentRegistrationId = result.registration_id;
+          closeSignup();
         if (currentRole === "visitor") {
+          await loadLiveState();
           visitorDash.classList.add("active");
           visitorDash.scrollIntoView({ behavior: "smooth" });
         } else {
@@ -1511,12 +1609,20 @@
           };
           go("floor");
         }
+          alert(result.email_sent ? "ลงทะเบียนเรียบร้อย และส่งอีเมลแล้ว / Registration complete and email sent." : "ลงทะเบียนเรียบร้อย / Registration complete. Email delivery requires checking.");
+        } catch (error) {
+          alert(error.message);
+        } finally {
+          continueBtn.disabled = false;
+          continueBtn.innerHTML = original;
+        }
       }
       function go(id) {
         document.getElementById(id).scrollIntoView({ behavior: "smooth" });
       }
       renderBooths();
       setRole("exhibitor");
+      loadLiveState();
     </script>
   </body>
 </html>

@@ -898,6 +898,7 @@
                 >
               </div>
               <div id="paymentBox" class="hidden">
+                <div id="paymentFormWrap">
                 <div class="notice">
                   พื้นที่ถูกสำรองไว้ 15 นาที: <b id="countdown">15:00</b
                   ><span class="en">Space held for 15 minutes.</span>
@@ -913,6 +914,10 @@
                     >Confirm Booking</span
                   >
                 </button>
+                </div>
+                <div id="bookingSuccess" class="notice success hidden">
+                  <b>ยืนยันการจองแล้ว / Booking Confirmed</b><br />กรุณาชำระเงินภายใน 48 ชั่วโมง / Please complete payment within 48 hours.
+                </div>
               </div>
             </div>
           </div>
@@ -1252,6 +1257,7 @@
       function showProfile(id) {
         selectedEmpty.classList.add("hidden");
         const p = profiles[id];
+        if (!p) return;
         profileCard.classList.add("open");
         profileLogo.textContent = p.name[0];
         profileName.textContent = p.name;
@@ -1268,10 +1274,15 @@
       }
       function holdSelected() {
         if (!selected) return;
-        status[selected] = "hold";
-        profiles[selected] = {
+        if (!currentExhibitor.name) {
+          openSignup("exhibitor");
+          return;
+        }
+        const heldSpace = selected;
+        status[heldSpace] = "hold";
+        profiles[heldSpace] = {
           name: currentExhibitor.name || "ร้านค้าของคุณ / Your Business",
-          category: currentExhibitor.category || cats[selected[0]],
+          category: currentExhibitor.category || cats[heldSpace[0]],
           products:
             currentExhibitor.products || "รอข้อมูลสินค้า / Products pending",
           description: currentExhibitor.description || "",
@@ -1282,6 +1293,9 @@
         selectedCard.classList.add("hidden");
         paymentEmpty.classList.add("hidden");
         paymentBox.classList.remove("hidden");
+        paymentFormWrap.classList.remove("hidden");
+        bookingSuccess.classList.add("hidden");
+        countdown.textContent = "15:00";
         clearInterval(timer);
         timer = setInterval(() => {
           remaining--;
@@ -1291,8 +1305,10 @@
             String(remaining % 60).padStart(2, "0");
           if (remaining <= 0) {
             clearInterval(timer);
-            status[selected] = "available";
-            delete profiles[selected];
+            if (status[heldSpace] === "hold") {
+              status[heldSpace] = "available";
+              delete profiles[heldSpace];
+            }
             paymentBox.classList.add("hidden");
             paymentEmpty.classList.remove("hidden");
             renderBooths();
@@ -1301,8 +1317,8 @@
       }
       function confirmPending() {
         clearInterval(timer);
-        paymentBox.innerHTML =
-          '<div class="notice success"><b>ยืนยันการจองแล้ว / Booking Confirmed</b><br>กรุณาชำระเงินภายใน 48 ชั่วโมง / Please complete payment within 48 hours.</div>';
+        paymentFormWrap.classList.add("hidden");
+        bookingSuccess.classList.remove("hidden");
         showProfile(selected);
       }
       function openSignup(r) {
@@ -1328,6 +1344,11 @@
           r === "visitor"
             ? 'ลงทะเบียนผู้เข้าชม<span class="en" style="color:white">Continue as Visitor</span>'
             : 'สมัครและเลือกพื้นที่<span class="en" style="color:white">Continue as Exhibitor</span>';
+        businessInput.required = r === "exhibitor";
+        categoryInput.required = r === "exhibitor";
+        productsInput.required = r === "exhibitor";
+        descriptionInput.required = r === "exhibitor";
+        presenceInput.required = r === "exhibitor";
         toggleOther();
         togglePresence();
       }
@@ -1360,7 +1381,15 @@
           websiteInput.focus();
           return;
         }
-        window.open(value, "_blank", "noopener");
+        try {
+          const url = new URL(value);
+          if (!/^https?:$/.test(url.protocol)) throw new Error("unsupported");
+          window.open(url.href, "_blank", "noopener");
+        } catch (_) {
+          websiteInput.setCustomValidity("Please enter a complete http:// or https:// link");
+          websiteInput.reportValidity();
+          websiteInput.addEventListener("input", () => websiteInput.setCustomValidity(""), { once: true });
+        }
       }
       function submitSignup(e) {
         e.preventDefault();

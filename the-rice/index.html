@@ -979,6 +979,12 @@
                   <div class="row"><span>พื้นที่ / Space</span><b id="paymentSpace">—</b></div>
                   <div class="row"><span>ยอดชำระ / Amount</span><b>กำหนดโดยผู้จัดงาน / Set by organizer</b></div>
                   <div class="row"><span>ชำระภายใน / Payment Due</span><b id="paymentDue">—</b></div>
+                  <div class="notice" style="border:2px solid #e34a55;background:#fff0f1;color:#8b1f2a">
+                    <b>ก่อนชำระเงิน: เมื่อชำระเงินแล้ว ไม่สามารถยกเลิกและไม่คืนเงินทุกกรณี</b>
+                    <span class="en">Before payment: Once payment is made, the booking cannot be cancelled and no refund will be provided under any circumstances.</span>
+                  </div>
+                  <label style="display:flex;gap:9px;margin:15px 0"><input id="paymentNoRefundAck" type="checkbox" onchange="unlockPayment()"><span>ข้าพเจ้ารับทราบและต้องการดำเนินการชำระเงิน<span class="en">I acknowledge this condition and wish to proceed to payment.</span></span></label>
+                  <div id="paymentDetailsGate" class="hidden">
                   <div class="paymentMethods">
                     <button id="bankChoice" class="paymentChoice active" type="button" onclick="selectPaymentMethod('bank')">โอนเข้าบัญชีงาน<span class="en">Event Bank Transfer</span></button>
                     <button id="qrChoice" class="paymentChoice" type="button" onclick="selectPaymentMethod('qr')">HERO PAY QR<span class="en">Event PromptPay QR</span></button>
@@ -997,12 +1003,8 @@
                     <label><b>อัปโหลดหลักฐานการชำระเงิน</b><span class="en">Upload Payment Slip</span></label>
                     <input id="paymentSlip" type="file" accept="image/*,.pdf" />
                   </div>
-                  <div class="notice" style="border:2px solid #e34a55;background:#fff0f1;color:#8b1f2a">
-                    <b>เมื่อชำระเงินแล้ว ไม่สามารถยกเลิกและไม่คืนเงินทุกกรณี</b>
-                    <span class="en">After payment, this booking is non-cancellable and non-refundable under all circumstances.</span>
-                  </div>
-                  <label style="display:flex;gap:9px;margin:15px 0"><input id="paymentNoRefundAck" type="checkbox"><span>ข้าพเจ้ารับทราบก่อนส่งหลักฐานการชำระเงิน<span class="en">I acknowledge this before submitting payment proof.</span></span></label>
                   <button class="btn blue" style="width:100%" type="button" onclick="submitPaymentSlip()">ส่งหลักฐานการชำระเงิน<span class="en" style="color:white">Submit Payment Slip</span></button>
+                  </div>
                 </div>
                 <div id="paymentSubmitted" class="notice success hidden"><b>ได้รับหลักฐานการชำระเงินแล้ว</b><span class="en">Payment slip received—awaiting organizer verification.</span></div>
               </div>
@@ -1499,6 +1501,12 @@
         qrChoice.classList.toggle("active", method === "qr");
         bankDetails.classList.toggle("hidden", method !== "bank");
         qrDetails.classList.toggle("hidden", method !== "qr");
+      }
+      function unlockPayment() {
+        paymentDetailsGate.classList.toggle("hidden", !paymentNoRefundAck.checked);
+        if (paymentNoRefundAck.checked) {
+          requestAnimationFrame(() => paymentDetailsGate.scrollIntoView({ behavior: "smooth", block: "start" }));
+        }
       }
       async function submitPaymentSlip() {
         if (!paymentNoRefundAck.checked) {

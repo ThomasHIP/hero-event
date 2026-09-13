@@ -278,6 +278,15 @@
       .liveReport .reportRow span:last-child {
         white-space: nowrap;
       }
+      .liveReport .bookedCount {
+        color: #b77900;
+      }
+      .liveReport .paidCount {
+        color: #d92f42;
+      }
+      .liveReport .availableCount {
+        color: #119653;
+      }
       .liveReport .en {
         font-size: 12px;
       }
@@ -371,14 +380,14 @@
         border: 1px solid #b8e7ca;
       }
       .hold {
-        background: #fff3d4;
-        color: #8b5900;
-        border: 1px solid #efcc79;
+        background: #f7c948;
+        color: #4f3900;
+        border: 1px solid #d99b00;
       }
       .booked {
-        background: #fee9ec;
-        color: #ac2635;
-        border: 1px solid #f1b7be;
+        background: #eb4054;
+        color: #fff;
+        border: 1px solid #c8273a;
       }
       .selected {
         outline: 3px solid #24344e;
@@ -778,16 +787,6 @@
             >
           </div>
           <div class="floorShell">
-            <div class="floorTitle">
-              <b>5 โซนในแผนผังเดียว / 5 sectors on one floor plan</b
-              ><span class="en"
-                >แตะพื้นที่สีเขียวเพื่อจอง
-                หรือแตะพื้นที่สีเหลืองและสีแดงเพื่อดูข้อมูลร้านค้า</span
-              ><span class="en"
-                >Tap green to book; tap amber or red to view the
-                exhibitor.</span
-              >
-            </div>
             <div class="floor">
               <section class="sector s1">
                 <div class="sectorHead">
@@ -1169,9 +1168,9 @@
           r = v.filter((x) => x === "booked").length;
         availabilityText.innerHTML = `
           <div class="reportRow"><span>จำนวนพื้นที่ทั้งหมด<br><small class="en">Total Spaces</small></span><span>120 ร้าน</span></div>
-          <div class="reportRow"><span>จองแล้ว<br><small class="en">Booked</small></span><span>${h} ร้าน</span></div>
-          <div class="reportRow"><span>ชำระเงินแล้ว<br><small class="en">Paid</small></span><span>${r} ร้าน</span></div>
-          <div class="reportRow"><span>คงเหลือ<br><small class="en">Remaining</small></span><span>${a} ร้าน</span></div>
+          <div class="reportRow bookedCount"><span>จองแล้ว<br><small class="en">Booked</small></span><span>${h} ร้าน 🟡</span></div>
+          <div class="reportRow paidCount"><span>ชำระเงินแล้ว<br><small class="en">Paid</small></span><span>${r} ร้าน ♥️</span></div>
+          <div class="reportRow availableCount"><span>คงเหลือ<br><small class="en">Available</small></span><span>${a} ร้าน 💚</span></div>
         `;
       }
       function spaceClick(id) {

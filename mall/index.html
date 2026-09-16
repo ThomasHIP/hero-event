@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0">
 <title>HERO Mall | Shop with HERO Points</title>
 <meta name="description" content="HERO Mall inside HERO Event — shop HERO-managed products and redeem HERO Points as product-defined discounts.">
-<link rel="stylesheet" href="/mall/mall.css?v=20260916b">
+<link rel="stylesheet" href="/mall/mall.css?v=20260916c">
 </head>
 <body>
 <header>
@@ -56,31 +56,39 @@
   <p class="lead">เริ่มจากสินค้าและบริการที่ HERO บริหารเอง และจะเพิ่มรายการอื่น ๆ ต่อไป</p>
   <div class="grid">
 
-   <article class="card">
-    <div class="visual prb"><div><img src="/the-rice/hero-insure-logo.jpg" alt="HERO Insure"><h3>PRB Insurance</h3><div>Compulsory Motor Insurance</div></div></div>
+   <article class="card wide productSection">
+    <div class="sectionBanner"><img src="/mall/assets/prb-section.webp?v=20260916c" alt="HERO Insure PRB Insurance for Car and Pick-up"></div>
     <div class="body">
      <div class="redeem">Use <b>200 Points = ฿200 discount</b></div>
-     <div class="vehicle">
-      <label><span><input type="radio" name="prbType" value="prb-car" checked> รถเก๋ง / Car</span><strong>฿645.21</strong></label>
-      <label><span><input type="radio" name="prbType" value="prb-pickup"> รถกระบะ / Pick-up</span><strong>฿967.28</strong></label>
+     <div class="vehicleGrid">
+      <label class="vehicleCard">
+       <input type="radio" name="prbType" value="prb-car" checked>
+       <div class="vehiclePic prbCarCrop" aria-hidden="true"></div>
+       <div class="vehicleInfo"><span>รถเก๋ง / Car</span><strong>฿645.21</strong></div>
+      </label>
+      <label class="vehicleCard">
+       <input type="radio" name="prbType" value="prb-pickup">
+       <div class="vehiclePic prbPickupCrop" aria-hidden="true"></div>
+       <div class="vehicleInfo"><span>รถกระบะ / Pick-up</span><strong>฿967.28</strong></div>
+      </label>
      </div>
      <div class="muted">Redemption condition applies per eligible policy.</div>
      <div class="qty"><button onclick="changeQty('prb',-1)">−</button><span id="q-prb">1</span><button onclick="changeQty('prb',1)">+</button><button class="add" onclick="addPrb()">Add to cart</button></div>
     </div>
    </article>
 
-   <article class="card wide">
-    <div class="fumeHead"><b>YOU FUME EDP</b><span>5 ml • Choose your scent</span></div>
+   <article class="card wide productSection">
+    <div class="sectionBanner"><img src="/mall/assets/fume-section.webp?v=20260916c" alt="YOU FUME EDP five scents"></div>
     <div class="body">
      <div class="price">฿249 <span class="muted" style="font-size:15px">/ piece</span></div>
      <div class="redeem">Use <b>100 Points = ฿100 discount per piece</b></div>
      <div class="scentTitle">Choose 1 of 5 scents / เลือกกลิ่น</div>
      <div class="scentGrid">
-      <label class="scentCard"><input type="radio" name="fumeScent" value="fume-exotic" checked><div class="scentPhoto s1"><img src="/mall/assets/you-fume-card.svg?v=20260916scents" alt=""></div><div class="scentName">U Exotic Sunrise</div></label>
-      <label class="scentCard"><input type="radio" name="fumeScent" value="fume-orangery"><div class="scentPhoto s2"><img src="/mall/assets/you-fume-card.svg?v=20260916scents" alt=""></div><div class="scentName">U Orangery</div></label>
-      <label class="scentCard"><input type="radio" name="fumeScent" value="fume-wild"><div class="scentPhoto s3"><img src="/mall/assets/you-fume-card.svg?v=20260916scents" alt=""></div><div class="scentName">U Wild Sunset</div></label>
-      <label class="scentCard"><input type="radio" name="fumeScent" value="fume-flora"><div class="scentPhoto s4"><img src="/mall/assets/you-fume-card.svg?v=20260916scents" alt=""></div><div class="scentName">U Flora Jazmin</div></label>
-      <label class="scentCard"><input type="radio" name="fumeScent" value="fume-vanilla"><div class="scentPhoto s5"><img src="/mall/assets/you-fume-card.svg?v=20260916scents" alt=""></div><div class="scentName">U Vanilla Choco Candy</div></label>
+      <label class="scentCard"><input type="radio" name="fumeScent" value="fume-exotic" checked><div class="scentPhoto fumeCrop s1" aria-hidden="true"></div><div class="scentName">U Exotic Sunrise</div></label>
+      <label class="scentCard"><input type="radio" name="fumeScent" value="fume-orangery"><div class="scentPhoto fumeCrop s2" aria-hidden="true"></div><div class="scentName">U Orangery</div></label>
+      <label class="scentCard"><input type="radio" name="fumeScent" value="fume-wild"><div class="scentPhoto fumeCrop s3" aria-hidden="true"></div><div class="scentName">U Wild Sunset</div></label>
+      <label class="scentCard"><input type="radio" name="fumeScent" value="fume-flora"><div class="scentPhoto fumeCrop s4" aria-hidden="true"></div><div class="scentName">U Flora Jazmin</div></label>
+      <label class="scentCard"><input type="radio" name="fumeScent" value="fume-vanilla"><div class="scentPhoto fumeCrop s5" aria-hidden="true"></div><div class="scentName">U Vanilla Choco Candy</div></label>
      </div>
      <div class="qty"><button onclick="changeQty('fume',-1)">−</button><span id="q-fume">1</span><button onclick="changeQty('fume',1)">+</button><button class="add" onclick="addFume()">Add selected scent</button></div>
     </div>
@@ -119,6 +127,10 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/mall/mall.js?v=20260916b"></script>
+<script src="/mall/mall.js?v=20260916c"></script>
+<script>
+// Restore the complete second HQ hero slide. Do not redesign either main slide.
+loadHQSlide('heroSlide2',['/mall/assets/hq2-0.b64','/mall/assets/hq2-1.b64','/mall/assets/hq2-2.b64','/mall/assets/hq2-3.b64']);
+</script>
 </body>
 </html>

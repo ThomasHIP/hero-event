@@ -1030,13 +1030,18 @@
             >
           </div>
           <div class="notice success">
-            <b>คุณได้รับ 200 HERO Credits สำหรับใช้ซื้อประกัน พ.ร.บ.</b
+            <b>ระบบสร้างหรือเชื่อม HERO ID ให้อัตโนมัติ พร้อมสิทธิ์ 200 HERO Points สำหรับประกัน พ.ร.บ.</b
             ><span class="en"
-              >You have received 200 HERO Credits toward PRB Insurance.</span
+              >Your HERO ID is created or linked automatically, with the 200 HERO Points PRB benefit applied once.</span
             >
+            <div style="margin-top:8px;font-weight:900">HERO Points: <span id="heroCreditBalance">—</span></div>
           </div>
           <div class="insureBenefit">
             <img src="hero-insure-logo.jpg?v=1" alt="HERO Insure" />
+            <div class="notice success" style="margin-bottom:12px">
+              HERO ID ทำงานอยู่เบื้องหลัง ไม่ต้องสมัครซ้ำในงานนี้
+              <span class="en">HERO ID works in the background—no second registration is needed at this event.</span>
+            </div>
             <b>รับสิทธิ์ใช้คะแนนในการซื้อ พ.ร.บ. กับ HERO Insure</b>
             <span class="en"
               >Use your HERO Credits toward PRB Insurance with HERO
@@ -1220,7 +1225,36 @@
     <script>
       const API_URL = "https://ajbuenoxbsfmwhydvlxd.supabase.co/functions/v1/hero-event-api";
       const API_KEY = "sb_publishable_oron-nE6v6FSF_YPckMCGA_4QHstvwm";
-      const invitationToken = new URLSearchParams(location.search).get("invite") || "";
+      const HERO_REGISTER_URL = "https://xuygpfswpimhtvtmoljg.supabase.co/functions/v1/hero-event-register";
+      const HERO_REGISTER_KEY = "sb_publishable_bXiHN2U_vi3J3APNqfv14A_TXJ8tm1w";
+      const EVENT_CODE = "the-rice-event";
+      const EVENT_NAME = "The Rice Event";
+      const entryParams = new URLSearchParams(location.search);
+      const invitationToken = entryParams.get("invite") || "";
+      const directVisitorRegistration =
+        entryParams.get("register") === "visitor" ||
+        entryParams.get("hero_insure") === "1";
+
+      async function registerHeroVisitor(payload = {}) {
+        const response = await fetch(HERO_REGISTER_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: HERO_REGISTER_KEY,
+          },
+          body: JSON.stringify({
+            event_code: EVENT_CODE,
+            event_name: EVENT_NAME,
+            campaign_code: "THE_RICE_HERO_INSURE_200",
+            source: entryParams.get("source") === "qr" ? "event_qr" : "event_link",
+            ...payload,
+          }),
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || "Please try again.");
+        return result;
+      }
+
       async function callApi(action, payload = {}) {
         const response = await fetch(API_URL, {
           method: "POST",
@@ -1643,28 +1677,41 @@
             logoBase64 = String(logoData).split(",")[1];
             logoMime = logoFile.type;
           }
-          const result = await callApi("register", {
-            role: currentRole,
-            full_name: nameInput.value,
-            mobile: mobileInput.value,
-            email: emailInput.value,
-            osk_batch: oskInput.value,
-            business_name: businessInput.value,
-            category,
-            products: productsInput.value,
-            business_description: descriptionInput.value,
-            presence_type: presenceInput.value,
-            business_link: presenceInput.value === "link" ? websiteInput.value : "",
-            logo_base64: logoBase64,
-            logo_mime: logoMime,
-            publish_consent: currentRole === "exhibitor" ? publishConsent.checked : false,
-            no_refund_ack: currentRole === "exhibitor" ? refundConsent.checked : false,
-            invite_token: invitationToken,
-          });
+          let result;
+          if (currentRole === "visitor") {
+            result = await registerHeroVisitor({
+              full_name: nameInput.value,
+              mobile: mobileInput.value,
+              email: emailInput.value,
+              pdpa_consent: visitorConsent.checked,
+            });
+          } else {
+            result = await callApi("register", {
+              role: currentRole,
+              full_name: nameInput.value,
+              mobile: mobileInput.value,
+              email: emailInput.value,
+              osk_batch: oskInput.value,
+              business_name: businessInput.value,
+              category,
+              products: productsInput.value,
+              business_description: descriptionInput.value,
+              presence_type: presenceInput.value,
+              business_link: presenceInput.value === "link" ? websiteInput.value : "",
+              logo_base64: logoBase64,
+              logo_mime: logoMime,
+              publish_consent: publishConsent.checked,
+              no_refund_ack: refundConsent.checked,
+              invite_token: invitationToken,
+            });
+          }
           currentRegistrationId = result.registration_id;
           closeSignup();
         if (currentRole === "visitor") {
-          await loadLiveState();
+          if (document.getElementById("heroCreditBalance")) {
+            document.getElementById("heroCreditBalance").textContent =
+              Number(result.hero_credit_balance || 0).toLocaleString("en-US");
+          }
           visitorDash.classList.add("active");
           visitorDash.scrollIntoView({ behavior: "smooth" });
         } else {
@@ -1692,7 +1739,15 @@
             }
           });
         }
-          if (currentRole === "visitor") showMessage(result.email_sent ? "ลงทะเบียนเรียบร้อย และส่งอีเมลแล้ว / Registration complete and email sent." : "ลงทะเบียนเรียบร้อย / Registration complete.");
+          if (currentRole === "visitor") {
+            if (result.welcome_awarded) {
+              showMessage("ลงทะเบียนเรียบร้อย รับ 200 HERO Points แล้ว / Registration complete — 200 HERO Points added.");
+            } else if (result.already_registered) {
+              showMessage("คุณลงทะเบียนงานนี้แล้ว ระบบใช้ HERO ID เดิมของคุณ / Already registered — your existing HERO ID is linked.");
+            } else {
+              showMessage("ลงทะเบียนเรียบร้อย ระบบเชื่อม HERO ID เดิมของคุณแล้ว / Registration complete — your existing HERO ID is linked.");
+            }
+          }
         } catch (error) {
           showMessage(error.message, true);
         } finally {
@@ -1725,7 +1780,17 @@
       }
       renderBooths();
       setRole("exhibitor");
-      loadLiveState().then(openInvitation);
+      loadLiveState().then(() => {
+        if (invitationToken) {
+          openInvitation();
+          return;
+        }
+        if (directVisitorRegistration) {
+          setRole("visitor");
+          signupModal.classList.add("open");
+          showMessage("ลงทะเบียนผู้เข้าชมเพื่อรับ HERO ID และสิทธิ์ 200 HERO Points / Register as a visitor to link your HERO ID and 200 HERO Points.");
+        }
+      });
     </script>
   </body>
 </html>

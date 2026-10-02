@@ -1087,20 +1087,26 @@
           <h2>
             ลงทะเบียนเรียบร้อย<span class="en">Registration Complete</span>
           </h2>
+          <div class="notice success" style="margin-bottom:14px">
+            <b id="visitorRegisteredName">ลงทะเบียนสำเร็จแล้ว</b>
+            <span class="en">Your registration is confirmed.</span>
+            <div id="confirmationEmailStatus" style="margin-top:7px;font-size:13px"></div>
+          </div>
           <div class="visitorCount">
-            มีผู้ลงทะเบียนเข้าชมงานแล้ว
+            ผู้ลงทะเบียนเข้าร่วมงานแล้ว
             <span id="visitorCountValue">—</span> คน
             <span class="en"
-              ><span id="visitorCountValueEn">—</span> visitors have
-              registered.</span
+              ><span id="visitorCountValueEn">—</span> visitors have registered.</span
             >
           </div>
           <div class="notice success">
-            <b>ระบบสร้างหรือเชื่อม HERO ID ให้อัตโนมัติ พร้อมสิทธิ์ 200 HERO Points สำหรับประกัน พ.ร.บ.</b
-            ><span class="en"
-              >Your HERO ID is created or linked automatically, with the 200 HERO Points PRB benefit applied once.</span
-            >
-            <div style="margin-top:8px;font-weight:900">HERO Points: <span id="heroCreditBalance">—</span></div>
+            <b>คะแนนสะสม HERO Points ของคุณ</b>
+            <div style="margin-top:8px;font-size:34px;font-weight:950;color:#236fda"><span id="heroCreditBalance">—</span> คะแนน</div>
+            <div style="margin-top:6px">ใช้เป็นส่วนลดซื้อประกัน พ.ร.บ. กับ HERO Insure</div>
+            <a id="pointsViewLink" class="btn pink hidden" href="#" style="display:inline-block;margin-top:14px;text-decoration:none">
+              ดู HERO Points ของฉัน
+              <span class="en" style="color:white">View My HERO Points</span>
+            </a>
           </div>
           <div class="insureBenefit">
             <img src="hero-insure-logo.jpg?v=1" alt="HERO Insure" />
@@ -1127,6 +1133,23 @@
         </div>
       </section>
     </main>
+    <div id="pointsView" class="benefitPage" aria-label="My HERO Points">
+      <section class="benefitCard" style="max-width:620px">
+        <header class="benefitTop">
+          <div class="benefitBrand">HERO Points</div>
+          <button class="benefitBack" type="button" onclick="closePointsView()">ปิด / Close</button>
+        </header>
+        <div class="benefitCopy" style="text-align:center">
+          <div class="k">MY HERO POINTS</div>
+          <p id="pointsViewName" class="benefitEventTitle" style="margin-top:18px"></p>
+          <h2><span id="pointsViewBalance">—</span> <span>คะแนน</span></h2>
+          <p class="benefitLead">ใช้เป็นส่วนลดซื้อ<br><strong>ประกัน พ.ร.บ.</strong><br>กับ <strong>HERO Insure</strong></p>
+          <p id="pointsViewEvent" class="benefitSub"></p>
+          <button class="benefitContinue" type="button" onclick="closePointsView()">กลับไป The Rice Event</button>
+        </div>
+      </section>
+    </div>
+
     <div id="benefitIntro" class="benefitPage" aria-label="200 HERO Points visitor benefit">
       <section class="benefitCard">
         <header class="benefitTop">
@@ -1337,6 +1360,7 @@
       const directBenefitPage =
         entryParams.get("benefit") === "1" ||
         entryParams.get("hero_benefit") === "1";
+      const pointsToken = entryParams.get("points") || "";
 
       async function registerHeroVisitor(payload = {}) {
         const response = await fetch(HERO_REGISTER_URL, {
@@ -1356,6 +1380,46 @@
         const result = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(result.error || "Please try again.");
         return result;
+      }
+
+      async function loadHeroEventCount() {
+        try {
+          const response = await fetch(
+            HERO_REGISTER_URL + "?action=count&event_code=" + encodeURIComponent(EVENT_CODE),
+            { headers: { apikey: HERO_REGISTER_KEY } }
+          );
+          const result = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(result.error || "Count unavailable");
+          if (document.getElementById("visitorCountValue")) {
+            visitorCountValue.textContent = Number(result.visitor_count || 0).toLocaleString("en-US");
+            visitorCountValueEn.textContent = Number(result.visitor_count || 0).toLocaleString("en-US");
+          }
+        } catch (error) {
+          console.error("HERO visitor count unavailable", error);
+        }
+      }
+
+      async function loadPointsView(token) {
+        try {
+          const response = await fetch(
+            HERO_REGISTER_URL + "?action=points&token=" + encodeURIComponent(token),
+            { headers: { apikey: HERO_REGISTER_KEY } }
+          );
+          const result = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(result.error || "Points unavailable");
+          pointsViewName.textContent = result.full_name || "HERO Member";
+          pointsViewBalance.textContent = Number(result.hero_credit_balance || 0).toLocaleString("en-US");
+          pointsViewEvent.textContent = result.event_name ? "ลงทะเบียนจาก " + result.event_name : "";
+          pointsView.classList.add("open");
+          document.body.style.overflow = "hidden";
+        } catch (error) {
+          showMessage(error.message || "ไม่สามารถเปิดคะแนนได้ / Unable to open points.", true);
+        }
+      }
+
+      function closePointsView() {
+        pointsView.classList.remove("open");
+        document.body.style.overflow = "";
       }
 
       async function callApi(action, payload = {}) {
@@ -1823,12 +1887,30 @@
           currentRegistrationId = result.registration_id;
           closeSignup();
         if (currentRole === "visitor") {
+          const visitorName = result.registration_name || nameInput.value.trim();
+          if (document.getElementById("visitorRegisteredName")) {
+            visitorRegisteredName.textContent = "คุณ " + visitorName + " ลงทะเบียนสำเร็จแล้ว";
+          }
           if (document.getElementById("heroCreditBalance")) {
-            document.getElementById("heroCreditBalance").textContent =
+            heroCreditBalance.textContent =
               Number(result.hero_credit_balance || 0).toLocaleString("en-US");
+          }
+          if (typeof result.visitor_count !== "undefined") {
+            visitorCountValue.textContent = Number(result.visitor_count || 0).toLocaleString("en-US");
+            visitorCountValueEn.textContent = Number(result.visitor_count || 0).toLocaleString("en-US");
+          }
+          if (document.getElementById("confirmationEmailStatus")) {
+            confirmationEmailStatus.textContent = result.confirmation_sent
+              ? "ส่งอีเมลยืนยันไปที่ " + emailInput.value.trim() + " แล้ว"
+              : "ลงทะเบียนสำเร็จ แต่อีเมลยืนยันยังส่งไม่สำเร็จ";
+          }
+          if (result.points_url && document.getElementById("pointsViewLink")) {
+            pointsViewLink.href = result.points_url;
+            pointsViewLink.classList.remove("hidden");
           }
           visitorDash.classList.add("active");
           visitorDash.scrollIntoView({ behavior: "smooth" });
+          loadHeroEventCount();
         } else {
           currentExhibitor = {
             name: businessInput.value.trim() || nameInput.value.trim(),
@@ -1855,12 +1937,12 @@
           });
         }
           if (currentRole === "visitor") {
-            if (result.welcome_awarded) {
-              showMessage("ลงทะเบียนเรียบร้อย รับ 200 HERO Points แล้ว / Registration complete — 200 HERO Points added.");
-            } else if (result.already_registered) {
-              showMessage("คุณลงทะเบียนงานนี้แล้ว ระบบใช้ HERO ID เดิมของคุณ / Already registered — your existing HERO ID is linked.");
+            if (result.confirmation_sent) {
+              showMessage("ลงทะเบียนสำเร็จ และส่งอีเมลยืนยันแล้ว / Registration confirmed and email sent.");
+            } else if (result.welcome_awarded) {
+              showMessage("ลงทะเบียนสำเร็จ รับ 200 HERO Points แล้ว / Registration complete — 200 HERO Points added.");
             } else {
-              showMessage("ลงทะเบียนเรียบร้อย ระบบเชื่อม HERO ID เดิมของคุณแล้ว / Registration complete — your existing HERO ID is linked.");
+              showMessage("ลงทะเบียนสำเร็จ / Registration complete.");
             }
           }
         } catch (error) {
@@ -1895,7 +1977,12 @@
       }
       renderBooths();
       setRole("exhibitor");
+      loadHeroEventCount();
       loadLiveState().then(() => {
+        if (pointsToken) {
+          loadPointsView(pointsToken);
+          return;
+        }
         if (invitationToken) {
           openInvitation();
           return;

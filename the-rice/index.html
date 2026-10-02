@@ -803,6 +803,9 @@
           ><button onclick="go('floor')">
             แผนผัง<span class="en">Floor Plan</span>
           </button>
+          <button onclick="location.href='https://my-hero.pages.dev/'">
+            My HERO<span class="en">Member</span>
+          </button>
         </div>
         <button class="btn grad" onclick="openSignup('exhibitor')">
           จองพื้นที่<span class="en" style="color: white">Book a Space</span>
@@ -1103,32 +1106,26 @@
             <b>คะแนนสะสม HERO Points ของคุณ</b>
             <div style="margin-top:8px;font-size:34px;font-weight:950;color:#236fda"><span id="heroCreditBalance">—</span> คะแนน</div>
             <div style="margin-top:6px">ใช้เป็นส่วนลดซื้อประกัน พ.ร.บ. กับ HERO Insure</div>
-            <a id="pointsViewLink" class="btn pink hidden" href="#" style="display:inline-block;margin-top:14px;text-decoration:none">
-              ดู HERO Points ของฉัน
-              <span class="en" style="color:white">View My HERO Points</span>
+            <a id="pointsViewLink" class="btn pink" href="https://my-hero.pages.dev/" style="display:inline-block;margin-top:14px;text-decoration:none">
+              เปิด My HERO
+              <span class="en" style="color:white">Open My HERO</span>
             </a>
           </div>
           <div class="insureBenefit">
             <img src="hero-insure-logo.jpg?v=1" alt="HERO Insure" />
             <div class="notice success" style="margin-bottom:12px">
-              HERO ID ทำงานอยู่เบื้องหลัง ไม่ต้องสมัครซ้ำในงานนี้
-              <span class="en">HERO ID works in the background—no second registration is needed at this event.</span>
+              บัญชี My HERO ของคุณเชื่อมกับการลงทะเบียนครั้งนี้แล้ว
+              <span class="en">Your My HERO account is connected to this registration.</span>
             </div>
             <b>รับสิทธิ์ใช้คะแนนในการซื้อ พ.ร.บ. กับ HERO Insure</b>
             <span class="en"
               >Use your HERO Credits toward PRB Insurance with HERO
               Insure.</span
             >
-            <button class="btn blue pendingBtn" type="button" disabled>
-              ใช้สิทธิ์ซื้อ พ.ร.บ. ตอนนี้
-              <span class="en" style="color: white"
-                >Redeem for PRB Insurance</span
-              >
-            </button>
-            <small class="en"
-              >ระบบรับสิทธิ์กำลังเชื่อมต่อ / Redemption connection in
-              progress</small
-            >
+            <a class="btn blue" href="https://heroinsure.successconnection.co.th/pages/motor-insurance.html" style="width:100%;margin-top:14px;text-decoration:none">
+              ซื้อประกัน พ.ร.บ. กับ HERO Insure
+              <span class="en" style="color:white">Buy Insurance with HERO Insure</span>
+            </a>
           </div>
         </div>
       </section>
@@ -1904,8 +1901,8 @@
               ? "ส่งอีเมลยืนยันไปที่ " + emailInput.value.trim() + " แล้ว"
               : "ลงทะเบียนสำเร็จ แต่อีเมลยืนยันยังส่งไม่สำเร็จ";
           }
-          if (result.points_url && document.getElementById("pointsViewLink")) {
-            pointsViewLink.href = result.points_url;
+          if (document.getElementById("pointsViewLink")) {
+            pointsViewLink.href = "https://my-hero.pages.dev/";
             pointsViewLink.classList.remove("hidden");
           }
           visitorDash.classList.add("active");
@@ -1994,7 +1991,7 @@
         if (directVisitorRegistration) {
           setRole("visitor");
           signupModal.classList.add("open");
-          showMessage("ลงทะเบียนผู้เข้าชมเพื่อรับ HERO ID และสิทธิ์ 200 HERO Points / Register as a visitor to link your HERO ID and 200 HERO Points.");
+          showMessage("ลงทะเบียนผู้เข้าชมเพื่อรับ บัญชี My HERO และสิทธิ์ 200 HERO Points / Register as a visitor to open your My HERO account and receive 200 HERO Points.");
         }
       });
     </script>

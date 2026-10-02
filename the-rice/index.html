@@ -659,9 +659,9 @@
       .benefitGrid{display:grid;grid-template-columns:1.05fr .95fr}
       .benefitCopy{padding:46px 42px}
       .benefitCopy .k{font-size:11px;letter-spacing:1.5px;font-weight:900;color:var(--blue)}
-      .benefitCopy h2{font-size:clamp(46px,7vw,76px);line-height:.94;letter-spacing:-3px;margin:12px 0 18px;color:#0b2c4c}
+      .benefitCopy h2{font-size:clamp(46px,7vw,76px);line-height:1.05;letter-spacing:-2px;margin:12px 0 18px;color:#0b2c4c;white-space:normal}
       .benefitCopy h2 span{color:var(--blue)}
-      .benefitLead{font-size:20px;line-height:1.5;font-weight:800;color:#36556e;margin:0 0 10px}
+      .benefitLead{font-size:20px;line-height:1.6;font-weight:800;color:#36556e;margin:0 0 10px;overflow:visible;word-break:keep-all}
       .benefitSub{font-size:13px;line-height:1.65;color:#74879a;margin:0 0 22px}
       .benefitUse{display:flex;gap:10px;padding:12px 13px;background:#f8fbfd;border:1px solid #e2eaf0;margin-top:9px}
       .benefitTick{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#e7f7ef;color:#159765;font-weight:950;flex:0 0 auto}
@@ -1125,17 +1125,12 @@
         <div class="benefitGrid">
           <section class="benefitCopy">
             <div class="k">REGISTER & GET YOUR BENEFIT</div>
-            <h2>รับ <span>200</span><br>HERO Points</h2>
-            <p class="benefitLead">ลงทะเบียนเข้าร่วมงาน แล้วรับ 200 HERO Points เพื่อใช้เป็นส่วนลดกับ HERO Insure</p>
-            <p class="benefitSub">HERO ID จะถูกสร้างหรือเชื่อมให้โดยอัตโนมัติหลังลงทะเบียน ไม่ต้องสมัครหลายครั้ง</p>
-            <div class="benefitUse">
-              <div class="benefitTick">✓</div>
-              <div><strong>ประกัน พ.ร.บ.</strong><span>ใช้ HERO Points เป็นส่วนลดเมื่อซื้อ พ.ร.บ. กับ HERO Insure</span></div>
-            </div>
-            <div class="benefitUse">
-              <div class="benefitTick">✓</div>
-              <div><strong>ประกันรถยนต์</strong><span>ใช้คะแนนเป็นสิทธิ์ส่วนลดตามผลิตภัณฑ์และเงื่อนไขที่ร่วมรายการ</span></div>
-            </div>
+            <h2>200 <span>คะแนน</span></h2>
+            <p class="benefitLead" style="font-size:24px;line-height:1.6;margin-top:18px">
+              สำหรับใช้แลกเป็นส่วนลด<br>
+              ในการซื้อ ประกัน พ.ร.บ. ประกันรถยนต์<br>
+              กับ HERO Insure
+            </p>
             <div class="benefitActions">
               <button class="benefitContinue" type="button" onclick="continueFromBenefit()">รับ 200 HERO Points และลงทะเบียน →</button>
               <button class="benefitBack" type="button" onclick="closeBenefit()">กลับ / Back</button>

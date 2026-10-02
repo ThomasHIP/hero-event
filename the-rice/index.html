@@ -639,6 +639,61 @@
       }
       .flowToast.show { transform: translate(-50%, 0); opacity: 1; }
       .flowToast.error { background: #fff0f1; color: #a72232; }
+      .benefitPage{
+        position:fixed; inset:0; z-index:95; display:none; overflow:auto;
+        background:#f5f9fc; padding:20px;
+      }
+      .benefitPage.open{display:grid;place-items:center}
+      .benefitCard{
+        width:min(900px,100%); background:#fff; border:1px solid #dfe7ee;
+        box-shadow:0 24px 80px rgba(18,54,82,.16); overflow:hidden;
+      }
+      .benefitTop{
+        display:flex;justify-content:space-between;gap:16px;align-items:center;
+        padding:18px 22px;border-bottom:1px solid #dfe7ee;
+      }
+      .benefitBrand{font-size:22px;font-weight:950}
+      .benefitBrand .rice{color:var(--pink)}
+      .benefitBrand .eventword{color:var(--blue)}
+      .benefitTop small{color:#71859a;font-weight:750;text-align:right}
+      .benefitGrid{display:grid;grid-template-columns:1.05fr .95fr}
+      .benefitCopy{padding:46px 42px}
+      .benefitCopy .k{font-size:11px;letter-spacing:1.5px;font-weight:900;color:var(--blue)}
+      .benefitCopy h2{font-size:clamp(46px,7vw,76px);line-height:.94;letter-spacing:-3px;margin:12px 0 18px;color:#0b2c4c}
+      .benefitCopy h2 span{color:var(--blue)}
+      .benefitLead{font-size:20px;line-height:1.5;font-weight:800;color:#36556e;margin:0 0 10px}
+      .benefitSub{font-size:13px;line-height:1.65;color:#74879a;margin:0 0 22px}
+      .benefitUse{display:flex;gap:10px;padding:12px 13px;background:#f8fbfd;border:1px solid #e2eaf0;margin-top:9px}
+      .benefitTick{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#e7f7ef;color:#159765;font-weight:950;flex:0 0 auto}
+      .benefitUse strong{display:block;font-size:15px}
+      .benefitUse span{display:block;margin-top:2px;color:#73879a;font-size:12px}
+      .benefitVisual{
+        background:linear-gradient(145deg,#0a3154,#1765b1); color:#fff;
+        padding:38px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center
+      }
+      .benefitVisual img{width:min(300px,88%);background:#fff;padding:14px;margin-bottom:24px}
+      .benefitCoin{
+        width:180px;height:180px;border-radius:50%;display:grid;place-items:center;
+        background:linear-gradient(145deg,#ffd65a,#f3aa14);color:#6c4500;
+        box-shadow:0 18px 45px rgba(0,0,0,.22),inset 0 0 0 10px rgba(255,255,255,.28)
+      }
+      .benefitCoin strong{display:block;font-size:58px;line-height:.9}
+      .benefitCoin span{display:block;font-size:18px;font-weight:950;margin-top:6px}
+      .benefitRedeem{margin-top:21px;font-size:18px;font-weight:850;line-height:1.45}
+      .benefitActions{display:grid;gap:9px;margin-top:24px}
+      .benefitContinue{border:0;background:var(--blue);color:#fff;padding:15px 18px;font-weight:900;font-size:16px;cursor:pointer}
+      .benefitBack{border:0;background:transparent;color:#658096;padding:8px;font-weight:750;cursor:pointer}
+      .benefitFine{font-size:10.5px;color:#8998a6;text-align:center;line-height:1.45}
+      @media(max-width:760px){
+        .benefitPage{padding:0}
+        .benefitGrid{grid-template-columns:1fr}
+        .benefitCopy{padding:30px 20px 24px}
+        .benefitCopy h2{font-size:50px;letter-spacing:-2px}
+        .benefitLead{font-size:17px}
+        .benefitVisual{padding:30px 20px 34px}
+        .benefitCoin{width:150px;height:150px}
+        .benefitCoin strong{font-size:48px}
+      }
       .platformBy {
         display: flex;
         align-items: center;
@@ -769,7 +824,7 @@
               ><span class="chip">5 โซน / Sectors</span>
             </div>
             <div class="heroBtns">
-              <button class="btn pink" onclick="location.href='benefit.html'">
+              <button class="btn pink" onclick="openBenefit()">
                 ลงทะเบียนผู้เข้าชม<span class="en" style="color: white"
                   >Visitor Registration</span
                 ></button
@@ -811,7 +866,7 @@
                   >
                 </div>
               </div>
-              <button class="btn pink" onclick="location.href='benefit.html'">
+              <button class="btn pink" onclick="openBenefit()">
                 ลงทะเบียนผู้เข้าชม<span class="en" style="color: white"
                   >Visitor Sign Up</span
                 >
@@ -1061,6 +1116,41 @@
         </div>
       </section>
     </main>
+    <div id="benefitIntro" class="benefitPage" aria-label="200 HERO Points visitor benefit">
+      <section class="benefitCard">
+        <header class="benefitTop">
+          <div class="benefitBrand"><span class="rice">TheRice</span>-<span class="eventword">Event</span></div>
+          <small>สิทธิพิเศษสำหรับผู้ลงทะเบียน<br>Visitor Registration Benefit</small>
+        </header>
+        <div class="benefitGrid">
+          <section class="benefitCopy">
+            <div class="k">REGISTER & GET YOUR BENEFIT</div>
+            <h2>รับ <span>200</span><br>HERO Points</h2>
+            <p class="benefitLead">ลงทะเบียนเข้าร่วมงาน แล้วรับ 200 HERO Points เพื่อใช้เป็นส่วนลดกับ HERO Insure</p>
+            <p class="benefitSub">HERO ID จะถูกสร้างหรือเชื่อมให้โดยอัตโนมัติหลังลงทะเบียน ไม่ต้องสมัครหลายครั้ง</p>
+            <div class="benefitUse">
+              <div class="benefitTick">✓</div>
+              <div><strong>ประกัน พ.ร.บ.</strong><span>ใช้ HERO Points เป็นส่วนลดเมื่อซื้อ พ.ร.บ. กับ HERO Insure</span></div>
+            </div>
+            <div class="benefitUse">
+              <div class="benefitTick">✓</div>
+              <div><strong>ประกันรถยนต์</strong><span>ใช้คะแนนเป็นสิทธิ์ส่วนลดตามผลิตภัณฑ์และเงื่อนไขที่ร่วมรายการ</span></div>
+            </div>
+            <div class="benefitActions">
+              <button class="benefitContinue" type="button" onclick="continueFromBenefit()">รับ 200 HERO Points และลงทะเบียน →</button>
+              <button class="benefitBack" type="button" onclick="closeBenefit()">กลับ / Back</button>
+              <div class="benefitFine">สิทธิ์ต้อนรับ 200 HERO Points รับได้ 1 ครั้งต่อ HERO ID • Welcome points are awarded once per HERO ID.</div>
+            </div>
+          </section>
+          <aside class="benefitVisual">
+            <img src="hero-insure-logo.jpg?v=1" alt="HERO Insure">
+            <div class="benefitCoin"><div><strong>200</strong><span>HERO Points</span></div></div>
+            <div class="benefitRedeem">ใช้เป็นส่วนลด<br>ประกัน พ.ร.บ. • ประกันรถยนต์</div>
+          </aside>
+        </div>
+      </section>
+    </div>
+
     <div id="signupModal" class="modal">
       <div id="modalCard" class="modalCard role-exhibitor">
         <div style="display: flex; justify-content: space-between">
@@ -1234,6 +1324,9 @@
       const directVisitorRegistration =
         entryParams.get("register") === "visitor" ||
         entryParams.get("hero_insure") === "1";
+      const directBenefitPage =
+        entryParams.get("benefit") === "1" ||
+        entryParams.get("hero_benefit") === "1";
 
       async function registerHeroVisitor(payload = {}) {
         const response = await fetch(HERO_REGISTER_URL, {
@@ -1583,6 +1676,18 @@
           requestAnimationFrame(() => paymentSubmitted.scrollIntoView({ behavior: "smooth", block: "center" }));
         } catch (error) { showMessage(error.message, true); }
       }
+      function openBenefit() {
+        benefitIntro.classList.add("open");
+        document.body.style.overflow = "hidden";
+      }
+      function closeBenefit() {
+        benefitIntro.classList.remove("open");
+        document.body.style.overflow = "";
+      }
+      function continueFromBenefit() {
+        closeBenefit();
+        openSignup("visitor");
+      }
       function openSignup(r) {
         setRole(r);
         signupModal.classList.add("open");
@@ -1783,6 +1888,10 @@
       loadLiveState().then(() => {
         if (invitationToken) {
           openInvitation();
+          return;
+        }
+        if (directBenefitPage) {
+          openBenefit();
           return;
         }
         if (directVisitorRegistration) {

@@ -659,7 +659,9 @@
       .benefitGrid{display:grid;grid-template-columns:1.05fr .95fr}
       .benefitCopy{padding:46px 42px}
       .benefitCopy .k{font-size:11px;letter-spacing:1.5px;font-weight:900;color:var(--blue)}
-      .benefitCopy h2{font-size:clamp(46px,7vw,76px);line-height:1.05;letter-spacing:-2px;margin:12px 0 18px;color:#0b2c4c;white-space:normal}
+      .benefitEventTitle{font-size:22px;line-height:1.35;font-weight:800;color:#36556e;margin:10px 0 14px}
+      .benefitEventTitle strong{font-size:30px;color:#0b2c4c}
+      .benefitCopy h2{font-size:clamp(44px,6vw,68px);line-height:1.08;letter-spacing:-2px;margin:10px 0 18px;color:#0b2c4c;white-space:normal}
       .benefitCopy h2 span{color:var(--blue)}
       .benefitLead{font-size:20px;line-height:1.6;font-weight:800;color:#36556e;margin:0 0 10px;overflow:visible;word-break:keep-all}
       .benefitSub{font-size:13px;line-height:1.65;color:#74879a;margin:0 0 22px}
@@ -688,8 +690,10 @@
         .benefitPage{padding:0}
         .benefitGrid{grid-template-columns:1fr}
         .benefitCopy{padding:30px 20px 24px}
-        .benefitCopy h2{font-size:50px;letter-spacing:-2px}
-        .benefitLead{font-size:17px}
+        .benefitEventTitle{font-size:18px;margin-bottom:10px}
+        .benefitEventTitle strong{font-size:25px}
+        .benefitCopy h2{font-size:46px;letter-spacing:-1.5px}
+        .benefitLead{font-size:18px;line-height:1.65}
         .benefitVisual{padding:30px 20px 34px}
         .benefitCoin{width:150px;height:150px}
         .benefitCoin strong{font-size:48px}
@@ -1125,11 +1129,12 @@
         <div class="benefitGrid">
           <section class="benefitCopy">
             <div class="k">REGISTER & GET YOUR BENEFIT</div>
-            <h2>200 <span>คะแนน</span></h2>
-            <p class="benefitLead" style="font-size:24px;line-height:1.6;margin-top:18px">
-              สำหรับใช้แลกเป็นส่วนลด<br>
-              ในการซื้อ ประกัน พ.ร.บ. ประกันรถยนต์<br>
-              กับ HERO Insure
+            <p class="benefitEventTitle">ลงทะเบียนเยี่ยมชมงาน<br><strong>The Rice Event</strong></p>
+            <h2>รับ <span>200 คะแนน</span></h2>
+            <p class="benefitLead">
+              เพื่อใช้แลกเป็นส่วนลดในการซื้อ<br>
+              <strong>ประกัน พ.ร.บ. และประกันรถยนต์</strong><br>
+              กับ <strong>HERO Insure</strong>
             </p>
             <div class="benefitActions">
               <button class="benefitContinue" type="button" onclick="continueFromBenefit()">รับ 200 HERO Points และลงทะเบียน →</button>

@@ -640,12 +640,12 @@
       .flowToast.show { transform: translate(-50%, 0); opacity: 1; }
       .flowToast.error { background: #fff0f1; color: #a72232; }
       .benefitPage{
-        position:fixed; inset:0; z-index:95; display:none; overflow:auto;
-        background:#f5f9fc; padding:20px;
+        position:fixed; inset:0; z-index:95; display:none; overflow-x:hidden; overflow-y:auto;
+        background:#f5f9fc; padding:20px; width:100vw; max-width:100vw;
       }
       .benefitPage.open{display:grid;place-items:center}
       .benefitCard{
-        width:min(900px,100%); background:#fff; border:1px solid #dfe7ee;
+        width:min(900px,100%); max-width:100%; background:#fff; border:1px solid #dfe7ee;
         box-shadow:0 24px 80px rgba(18,54,82,.16); overflow:hidden;
       }
       .benefitTop{
@@ -683,20 +683,27 @@
       .benefitCoin span{display:block;font-size:18px;font-weight:950;margin-top:6px}
       .benefitRedeem{margin-top:21px;font-size:18px;font-weight:850;line-height:1.45}
       .benefitActions{display:grid;gap:9px;margin-top:24px}
-      .benefitContinue{border:0;background:var(--blue);color:#fff;padding:15px 18px;font-weight:900;font-size:16px;cursor:pointer}
+      .benefitContinue{border:0;background:var(--pink);color:#fff;padding:15px 18px;font-weight:900;font-size:16px;cursor:pointer;width:100%;max-width:100%}
       .benefitBack{border:0;background:transparent;color:#658096;padding:8px;font-weight:750;cursor:pointer}
       .benefitFine{font-size:10.5px;color:#8998a6;text-align:center;line-height:1.45}
       @media(max-width:760px){
-        .benefitPage{padding:0}
-        .benefitGrid{grid-template-columns:1fr}
-        .benefitCopy{padding:30px 20px 24px}
-        .benefitEventTitle{font-size:18px;margin-bottom:10px}
-        .benefitEventTitle strong{font-size:25px}
-        .benefitCopy h2{font-size:46px;letter-spacing:-1.5px}
-        .benefitLead{font-size:18px;line-height:1.65}
-        .benefitVisual{padding:30px 20px 34px}
-        .benefitCoin{width:150px;height:150px}
-        .benefitCoin strong{font-size:48px}
+        html,body{max-width:100%;overflow-x:hidden}
+        .benefitPage{padding:0;width:100%;max-width:100%}
+        .benefitCard{width:100%;max-width:100%;border-left:0;border-right:0;box-shadow:none}
+        .benefitTop{padding:14px 16px}
+        .benefitTop small{font-size:10px}
+        .benefitGrid{grid-template-columns:1fr;width:100%;max-width:100%}
+        .benefitCopy{padding:26px 18px 22px;width:100%;max-width:100%}
+        .benefitEventTitle{font-size:17px;line-height:1.5;margin-bottom:10px}
+        .benefitEventTitle strong{font-size:23px}
+        .benefitCopy h2{font-size:clamp(38px,12vw,46px);letter-spacing:-1.2px;line-height:1.08}
+        .benefitLead{font-size:17px;line-height:1.65}
+        .benefitVisual{padding:28px 18px 32px;width:100%;max-width:100%}
+        .benefitVisual img{max-width:86%;height:auto}
+        .benefitCoin{width:145px;height:145px}
+        .benefitCoin strong{font-size:46px}
+        .benefitActions{width:100%;max-width:100%}
+        .benefitContinue{width:100%;max-width:100%;font-size:15px;padding:14px 12px}
       }
       .platformBy {
         display: flex;

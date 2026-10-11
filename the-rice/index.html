@@ -827,16 +827,17 @@
           </div>
           <div class="eventCard">
             <div class="kicker">
-              อาคารเดอะไรซ์ • กรุงเทพฯ • งาน 3 วัน<span class="en"
-                >THE RICE BUILDING • BANGKOK • 3-DAY EVENT</span
+              อาคารเดอะไรซ์ • กรุงเทพฯ • งาน 2 วัน<span class="en"
+                >THE RICE BUILDING • BANGKOK • 2-DAY EVENT</span
               >
             </div>
             <h1><span class="p">TheRice</span>-<span class="b">Event</span></h1>
             <div class="chips">
-              <span class="chip">3 วัน / Days</span
+              <span class="chip">2 วัน / Days</span
               ><span class="chip">120 พื้นที่ / Spaces</span
               ><span class="chip">5 โซน / Sectors</span>
             </div>
+            <p class="notice"><b>ค่าเช่าบูธวันละ 350 บาท × 2 วัน = 700 บาท</b><br />เพิ่มเศษสตางค์ตามเลขบูธ เช่น A-01 = 700.01 บาท<span class="en">Booth rental: ฿350/day × 2 days = ฿700, plus the booth number in satang. Example: A-01 = ฿700.01.</span></p>
             <div class="heroBtns">
               <button class="btn pink" onclick="openBenefit()">
                 ลงทะเบียนผู้เข้าชม<span class="en" style="color: white"
@@ -961,6 +962,8 @@
                 <div id="selectedCard" class="hidden">
                   <div class="row"><span>พื้นที่ / Space</span><b id="selSpace"></b></div>
                   <div class="row"><span>โซน / Sector</span><b id="selSector"></b></div>
+                  <div class="row"><span>ยอดชำระ / Amount</span><b id="selAmount"></b></div>
+                  <p class="muted">350 บาท × 2 วัน + เศษสตางค์ตามเลขบูธ<span class="en">฿350 × 2 days + booth-number satang</span></p>
                   <button class="btn grad" onclick="holdSelected()">สำรอง 15 นาที<span class="en" style="color:white">Hold for 15 Minutes</span></button>
                 </div>
                 <div id="profileCard" class="profile">
@@ -1023,6 +1026,8 @@
               </div>
               <div id="paymentBox" class="hidden">
                 <div id="paymentFormWrap">
+                <div class="row"><span>บูธที่สำรอง / Held Space</span><b id="heldPaymentSpace">—</b></div>
+                <div class="row"><span>ยอดชำระ / Amount</span><b id="heldPaymentAmount">—</b></div>
                 <div class="notice">
                   พื้นที่ถูกสำรองไว้ 15 นาที: <b id="countdown">15:00</b
                   ><span class="en">Space held for 15 minutes.</span>
@@ -1050,7 +1055,8 @@
                 <div id="paymentCheckout" class="hidden">
                   <div class="row"><span>เลขที่การจอง / Booking Reference</span><b id="bookingReference">—</b></div>
                   <div class="row"><span>พื้นที่ / Space</span><b id="paymentSpace">—</b></div>
-                  <div class="row"><span>ยอดชำระ / Amount</span><b>กำหนดโดยผู้จัดงาน / Set by organizer</b></div>
+                  <div class="row"><span>ยอดชำระ / Amount</span><b id="paymentAmount">—</b></div>
+                  <p id="paymentPriceBreakdown" class="muted"></p>
                   <div class="row"><span>ชำระภายใน / Payment Due</span><b id="paymentDue">—</b></div>
                   <div class="notice" style="border:2px solid #e34a55;background:#fff0f1;color:#8b1f2a">
                     <b>ก่อนชำระเงิน: เมื่อชำระเงินแล้ว ไม่สามารถยกเลิกและไม่คืนเงินทุกกรณี</b>
@@ -1342,6 +1348,7 @@
       TheRice-Event • ระบบจองพื้นที่จัดงาน / Event Booking Platform
     </footer>
     <div id="flowToast" class="flowToast" role="status" aria-live="polite"></div>
+    <script src="booth-pricing.js?v=20261011"></script>
     <script>
       const API_URL = "https://ajbuenoxbsfmwhydvlxd.supabase.co/functions/v1/hero-event-api";
       const API_KEY = "sb_publishable_oron-nE6v6FSF_YPckMCGA_4QHstvwm";
@@ -1451,7 +1458,20 @@
         currentRegistrationId = null,
         currentReservationId = null,
         currentReservationToken = null,
-        currentPaymentMethod = "bank";
+        currentPaymentMethod = "bank",
+        currentReservedBoothCode = null,
+        currentPaymentQuote = null;
+      function displayPaymentQuote(quote) {
+        if (!quote || !Number.isSafeInteger(quote.amount_minor) || quote.amount_minor <= 0) {
+          throw new Error("ไม่พบยอดชำระของรายการจอง / Booking payment amount is unavailable.");
+        }
+        currentPaymentQuote = quote;
+        const formatted = RiceBoothPricing.formatAmount(quote.amount_minor);
+        heldPaymentSpace.textContent = quote.booth_code;
+        heldPaymentAmount.textContent = formatted + " บาท / THB";
+        paymentAmount.textContent = formatted + " บาท / THB";
+        paymentPriceBreakdown.textContent = `${quote.daily_rate} บาท × ${quote.event_days} วัน = ${quote.base_amount} บาท + ${String(quote.booth_satang).padStart(2, "0")} สตางค์ / ${quote.daily_rate} THB × ${quote.event_days} days + ${quote.booth_satang} satang`;
+      }
       const booked = new Set([
           "A03",
           "A11",
@@ -1587,6 +1607,7 @@
           selectedCard.classList.remove("hidden");
           selSpace.textContent = id;
           selSector.textContent = cats[id[0]];
+          selAmount.textContent = RiceBoothPricing.quoteBooth(id).amount + " บาท / THB";
         } else showProfile(id);
         requestAnimationFrame(() =>
           selectedHub.scrollIntoView({ behavior: "smooth", block: "center" }),
@@ -1624,6 +1645,8 @@
           });
           currentReservationId = result.reservation_id;
           currentReservationToken = result.token;
+          currentReservedBoothCode = heldSpace;
+          displayPaymentQuote(result.payment_quote);
         status[heldSpace] = "hold";
         profiles[heldSpace] = {
           name: currentExhibitor.name || "ร้านค้าของคุณ / Your Business",
@@ -1679,17 +1702,18 @@
           token: currentReservationToken,
           no_refund_ack: true,
         });
+        displayPaymentQuote(result.payment_quote);
         clearInterval(timer);
         paymentFormWrap.classList.add("hidden");
         bookingSuccess.classList.remove("hidden");
         paymentCheckout.classList.remove("hidden");
         paymentSubmitted.classList.add("hidden");
-        paymentSpace.textContent = selected;
+        paymentSpace.textContent = result.payment_quote.booth_code || currentReservedBoothCode;
         bookingReference.textContent = result.booking_reference;
         const due = new Date(result.payment_due_at);
         paymentDue.textContent = due.toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short" });
         selectPaymentMethod("bank");
-        showProfile(selected);
+        showProfile(currentReservedBoothCode);
         showMessage(result.email_sent ? "ยืนยันการจองแล้ว และส่งอีเมลแล้ว / Booking confirmed and email sent." : "ยืนยันการจองแล้ว / Booking confirmed. Email delivery requires checking.");
         requestAnimationFrame(() => paymentCheckout.scrollIntoView({ behavior: "smooth", block: "start" }));
         } catch (error) { showMessage(error.message, true); await loadLiveState(); }
@@ -1997,3 +2021,4 @@
     </script>
   </body>
 </html>
+

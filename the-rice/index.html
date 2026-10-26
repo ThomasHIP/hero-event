@@ -789,7 +789,7 @@
           font-size: clamp(27px, 9vw, 43px);
         }
       }
-    </style>
+    .role-with-image{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:center}.registration-art{display:block;width:100%;height:auto;border-radius:16px}.registration-copy{min-width:0}.roleGrid{grid-template-columns:1fr}.registration-copy .btn{max-width:100%}@media(min-width:1000px){.registration-art{max-width:420px;justify-self:center}}@media(max-width:560px){.role-with-image{grid-template-columns:1fr}.registration-art{max-width:100%}} </style>
   </head>
   <body>
     <header class="top">
@@ -864,7 +864,7 @@
             </div>
           </div>
           <div class="roleGrid">
-            <article class="role visitor">
+            <article class="role visitor role-with-image"><img class="registration-art" src="/the-rice/assets/visitor-registration-v1.webp" width="1000" height="1000" alt="ลงทะเบียนเพื่อชมงาน Visitors รับ 200 แต้มตามเงื่อนไข" loading="lazy"><div class="registration-copy">
               <h3>ผู้เข้าชมงาน<span class="en">Visitor</span></h3>
               <p>
                 ลงทะเบียนรับโปรไฟล์ผู้เข้าชมและสิทธิประโยชน์ภายในงาน<span
@@ -886,8 +886,8 @@
                   >Visitor Sign Up</span
                 >
               </button>
-            </article>
-            <article class="role exhibitor">
+            </div></article>
+            <article class="role exhibitor role-with-image"><img class="registration-art" src="/the-rice/assets/exhibitor-registration-v1.webp" width="1000" height="1000" alt="จองบูธ เพื่อร่วมออกงาน Exhibitors" loading="lazy"><div class="registration-copy">
               <h3>ผู้แสดงสินค้า<span class="en">Exhibitor</span></h3>
               <p>
                 ลงทะเบียนร้านค้า แล้วเลือกพื้นที่จากแผนผังแบบเรียลไทม์<span
@@ -910,7 +910,7 @@
                   >Sign Up & Book</span
                 >
               </button>
-            </article>
+            </div></article>
           </div>
         </div>
       </section>

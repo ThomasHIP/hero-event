@@ -790,7 +790,7 @@
         }
       }
     .role-with-image{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:center}.registration-art{display:block;width:100%;height:auto;border-radius:16px}.registration-copy{min-width:0}.roleGrid{grid-template-columns:1fr}.registration-copy .btn{max-width:100%}@media(min-width:1000px){.registration-art{max-width:420px;justify-self:center}}@media(max-width:560px){.role-with-image{grid-template-columns:1fr}.registration-art{max-width:100%}} .event-shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:20px}.event-shop-card{display:block;background:white;border:1px solid var(--line);border-radius:22px;overflow:hidden;text-decoration:none;color:var(--ink);box-shadow:0 8px 26px #22304a08}.event-shop-card>img,.event-shop-card>svg{display:block;width:100%;height:auto}.event-shop-caption{padding:22px;text-align:center}.event-shop-caption strong{display:block;font-size:clamp(24px,3vw,34px);color:#123c9f}.event-shop-caption span{display:block;margin:8px 0;font-size:20px;font-weight:750}.event-shop-caption small{display:block;color:var(--muted);line-height:1.6}.shop-green .event-shop-caption{background:#edfff5}.event-shop-card:focus-visible{outline:4px solid #f0a824;outline-offset:4px}@media(max-width:680px){.event-shop-grid{grid-template-columns:1fr}.event-shop-caption{padding:20px}} .registration-image-button{display:block;padding:0;border:0;background:transparent;width:100%;cursor:pointer;text-align:inherit;border-radius:18px}.registration-image-button .registration-art{display:block;width:100%;height:auto}.registration-image-button:focus-visible{outline:4px solid #f0a824;outline-offset:4px}.benefitVisual.benefitVisual-ad{padding:20px;justify-content:center}.benefit-prb-ad{display:block;width:100%;color:inherit;text-decoration:none;position:relative}.benefit-prb-ad img{display:block;width:100%;max-width:none;height:auto;border-radius:14px;background:white}.benefit-prb-ad span{display:block;margin-top:16px;text-align:center;font-weight:800}@media(min-width:761px){#benefitIntro .benefitGrid{grid-template-columns:1fr}#benefitIntro .benefitVisual-ad{padding:28px}} </style>
-  </head>
+  <style>#visitorPrbOffer[hidden]{display:none!important}</style></head>
   <body>
     <header class="top">
       <div class="wrap nav">
@@ -1115,25 +1115,19 @@
             <div style="margin-top:8px;font-size:34px;font-weight:950;color:#236fda"><span id="heroCreditBalance">—</span> คะแนน</div>
             <div style="margin-top:6px">ใช้เป็นส่วนลดซื้อประกัน พ.ร.บ. กับ HERO Insure</div>
             <a id="pointsViewLink" class="btn pink" href="https://heroinsure.successconnection.co.th/pages/motor-insurance.html?source=the-rice-event" style="display:inline-block;margin-top:14px;text-decoration:none">
-              แลกแต้ม / รับส่วนลด พ.ร.บ. 200 บาท →
+              ใช้ 200 แต้ม · ดูส่วนลด พ.ร.บ. และขอราคา →
               <span class="en" style="color:white">Redeem Points · PRB Insurance Discount</span>
             </a>
           </div>
-          <div class="insureBenefit">
+          <div class="insureBenefit" id="visitorPrbOffer">
             <img src="hero-insure-logo.jpg?v=1" alt="HERO Insure" />
-            <div class="notice success" style="margin-bottom:12px">
-              บัญชี My HERO ของคุณเชื่อมกับการลงทะเบียนครั้งนี้แล้ว
-              <span class="en">Your My HERO account is connected to this registration.</span>
-            </div>
-            <b>รับสิทธิ์ใช้คะแนนในการซื้อ พ.ร.บ. กับ HERO Insure</b>
-            <span class="en"
-              >Use your HERO Credits toward PRB Insurance with HERO
-              Insure.</span
-            >
-            <a class="btn blue" href="https://heroinsure.successconnection.co.th/pages/motor-insurance.html" style="width:100%;margin-top:14px;text-decoration:none">
-              ซื้อประกัน พ.ร.บ. กับ HERO Insure
-              <span class="en" style="color:white">Buy Insurance with HERO Insure</span>
-            </a>
+            <h3>ใช้ 200 แต้ม เป็นส่วนลด พ.ร.บ. 200 บาทเลยไหม?</h3>
+            <p>สมาชิกใหม่รับ 200 แต้มต้อนรับครั้งเดียวต่อบัญชี My HERO · สมาชิกเดิมใช้ยอดแต้มที่มี ไม่ได้รับแต้มต้อนรับซ้ำ · ยืนยันอีเมล/เปิดใช้บัญชีก่อนใช้สิทธิ์</p>
+            <p><strong>รถเก๋ง: 645.21 − 200 = 445.21 บาท<br>รถกระบะ: 967.28 − 200 = 767.28 บาท</strong></p>
+            <p>ราคาอ้างอิงสำหรับระยะ 1 ปี เมื่อใช้ 200 แต้มที่มีสิทธิ์ ยอดจริงอาจเพิ่มตามจำนวนวันคุ้มครองเพื่อให้ครอบคลุมรอบภาษี เจ้าหน้าที่จะแจ้งก่อนยืนยัน</p>
+            <a class="btn blue" href="https://heroinsure.successconnection.co.th/pages/motor-insurance.html?source=the-rice-event#vehicleGrid" style="width:100%;margin-top:14px;text-decoration:none">สนใจ · เลือกรถและขอราคา HERO Insure →<span class="en" style="color:white">Choose Car or Pickup · Get an assisted quote</span></a>
+            <button class="btn" type="button" style="width:100%;margin-top:10px" onclick="document.getElementById('visitorPrbOffer').hidden=true">ไว้ภายหลัง · ลงทะเบียนงานเรียบร้อยแล้ว</button>
+            <small style="display:block;margin-top:12px">เตรียมเล่มทะเบียนรถและ พ.ร.บ. ฉบับเดิม หากไม่มีฉบับเดิม ให้แจ้งวันที่ต้องการเริ่มคุ้มครองผ่าน LINE HERO Insure</small>
           </div>
         </div>
 <div class="notice" style="margin-top:16px"><b>สิทธิพิเศษอื่นสำหรับสมาชิก My HERO</b><p>Dupkins · HUG Fig Tea · Gold Cross และสินค้าอื่นที่ร่วมรายการ</p><a class="btn blue" href="https://my-hero.pages.dev/points-redemption?source=the-rice-event" style="display:inline-block;text-decoration:none">ดูสิทธิ์ทั้งหมดใน My HERO →</a><small style="display:block;margin-top:10px">ข้อเสนอสินค้าอื่นเปิดใช้ตามเงื่อนไขแต่ละแบรนด์ การเปิดดูสินค้าไม่หักแต้ม</small></div>      </section>
@@ -1906,6 +1900,7 @@
           currentRegistrationId = result.registration_id;
           closeSignup();
         if (currentRole === "visitor") {
+          document.getElementById('visitorPrbOffer').hidden=false;
           const visitorName = result.registration_name || nameInput.value.trim();
           if (document.getElementById("visitorRegisteredName")) {
             visitorRegisteredName.textContent = "คุณ " + visitorName + " ลงทะเบียนสำเร็จแล้ว";
